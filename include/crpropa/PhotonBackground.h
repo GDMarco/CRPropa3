@@ -3,9 +3,11 @@
 
 #include "crpropa/Common.h"
 #include "crpropa/Referenced.h"
+#include "crpropa/Vector3.h"
 
 #include <vector>
 #include <string>
+#include <unordered_map>
 
 namespace crpropa {
 /**
@@ -22,6 +24,7 @@ public:
 	PhotonField() {
 		this->fieldName = "AbstractPhotonField";
 		this->isRedshiftDependent = false;
+        this->isSpatialDependent = false;
 	}
 
 	/**
@@ -30,9 +33,9 @@ public:
 	 @param ePhoton		photon energy [J]
 	 @param z			redshift (if redshift dependent, default = 0.)
 	 */
-	virtual double getPhotonDensity(double ePhoton, double z = 0.) const = 0;
-	virtual double getMinimumPhotonEnergy(double z) const = 0;
-	virtual double getMaximumPhotonEnergy(double z) const = 0;
+	virtual double getPhotonDensity(const double ePhoton = 0., double z = 0., const Vector3d &pos = Vector3d(0.,0.,0.)) const = 0; //new
+	virtual double getMinimumPhotonEnergy(double z, const Vector3d &pos = Vector3d(0.,0.,0.)) const = 0;
+	virtual double getMaximumPhotonEnergy(double z, const Vector3d &pos = Vector3d(0.,0.,0.)) const = 0;
 	virtual std::string getFieldName() const {
 		return this->fieldName;
 	}
@@ -49,6 +52,10 @@ public:
 	bool hasRedshiftDependence() const {
 		return this->isRedshiftDependent;
 	}
+    
+    bool hasSpatialDependence() const {
+        return this->isSpatialDependent; //new
+    }
 
 	void setFieldName(std::string fieldName) {
 		this->fieldName = fieldName;
@@ -57,6 +64,7 @@ public:
 protected:
 	std::string fieldName;
 	bool isRedshiftDependent;
+    bool isSpatialDependent;
 };
 
 /**
@@ -70,12 +78,12 @@ protected:
  */
 class TabularPhotonField: public PhotonField {
 public:
-	TabularPhotonField(const std::string fieldName, const bool isRedshiftDependent = true);
+	TabularPhotonField(const std::string fieldName, const bool isRedshiftDependent = true, const bool isSpatialDependent = true);
 	
-	double getPhotonDensity(double ePhoton, double z = 0.) const;
-	double getRedshiftScaling(double z) const;
-	double getMinimumPhotonEnergy(double z) const;
-	double getMaximumPhotonEnergy(double z) const;
+	double getPhotonDensity(const double ePhoton = 0., double z = 0., const Vector3d &pos = Vector3d(0.,0.,0.)) const;
+    double getRedshiftScaling(double z) const;
+	double getMinimumPhotonEnergy(double z, const Vector3d &pos = Vector3d(0.,0.,0.)) const;
+	double getMaximumPhotonEnergy(double z, const Vector3d &pos = Vector3d(0.,0.,0.)) const;
 
 protected:
 	void readPhotonEnergy(std::string filePath);
@@ -90,6 +98,26 @@ protected:
 	std::vector<double> redshiftScalings;
 };
 
+class TabularSpatialPhotonField: public PhotonField {
+public:
+    TabularSpatialPhotonField(const std::string fieldName, const bool isRedshiftDependent = true, const bool isSpatialDependent = true);
+    
+    double getPhotonDensity(const double ePhoton = 0., double z = 0., const Vector3d &pos = Vector3d(0.,0.,0.)) const;
+    double getMinimumPhotonEnergy(double z, const Vector3d &pos = Vector3d(0.,0.,0.)) const;
+    double getMaximumPhotonEnergy(double z, const Vector3d &pos = Vector3d(0.,0.,0.)) const;
+
+protected:
+    
+    std::vector<double> readPhotonEnergy(std::string filePath);
+    std::vector<double> readPhotonDensity(std::string filePath);
+    void checkInputData() const;
+    std::string splitFilename (const std::string str) const;
+    
+    std::vector<std::vector<double>> photonEnergies;
+    std::vector<std::vector<double>> photonDensity;
+    std::unordered_map<int, Vector3d> photonDict;
+};
+
 /**
  @class IRB_Kneiske04
  @brief Extragalactic background light model from Kneiske et al. 2004
@@ -100,7 +128,7 @@ protected:
  */
 class IRB_Kneiske04: public TabularPhotonField {
 public:
-	IRB_Kneiske04() : TabularPhotonField("IRB_Kneiske04", true) {}
+	IRB_Kneiske04() : TabularPhotonField("IRB_Kneiske04", true, false) {}
 };
 
 /**
@@ -113,7 +141,7 @@ public:
  */
 class IRB_Stecker05: public TabularPhotonField {
 public:
-	IRB_Stecker05() : TabularPhotonField("IRB_Stecker05", true) {}
+	IRB_Stecker05() : TabularPhotonField("IRB_Stecker05", true, false) {}
 };
 
 /**
@@ -126,7 +154,7 @@ public:
  */
 class IRB_Franceschini08: public TabularPhotonField {
 public:
-	IRB_Franceschini08() : TabularPhotonField("IRB_Franceschini08", true) {}
+	IRB_Franceschini08() : TabularPhotonField("IRB_Franceschini08", true, false) {}
 };
 
 /**
@@ -139,7 +167,7 @@ public:
  */
 class IRB_Finke10: public TabularPhotonField {
 public:
-	IRB_Finke10() : TabularPhotonField("IRB_Finke10", true) {}
+	IRB_Finke10() : TabularPhotonField("IRB_Finke10", true, false) {}
 };
 
 /**
@@ -152,7 +180,7 @@ public:
  */
 class IRB_Dominguez11: public TabularPhotonField {
 public:
-	IRB_Dominguez11() : TabularPhotonField("IRB_Dominguez11", true) {}
+	IRB_Dominguez11() : TabularPhotonField("IRB_Dominguez11", true, false) {}
 };
 
 /**
@@ -165,7 +193,7 @@ public:
  */
 class IRB_Gilmore12: public TabularPhotonField {
 public:
-	IRB_Gilmore12() : TabularPhotonField("IRB_Gilmore12", true) {}
+	IRB_Gilmore12() : TabularPhotonField("IRB_Gilmore12", true, false) {}
 };
 
 /**
@@ -178,7 +206,7 @@ public:
  */
 class IRB_Stecker16_upper: public TabularPhotonField {
 public:
-	IRB_Stecker16_upper() : TabularPhotonField("IRB_Stecker16_upper", true) {}
+	IRB_Stecker16_upper() : TabularPhotonField("IRB_Stecker16_upper", true, false) {}
 };
 
 /**
@@ -191,7 +219,7 @@ public:
  */
 class IRB_Stecker16_lower: public TabularPhotonField {
 public:
-	IRB_Stecker16_lower() : TabularPhotonField("IRB_Stecker16_lower", true) {}
+	IRB_Stecker16_lower() : TabularPhotonField("IRB_Stecker16_lower", true, false) {}
 };
 
 /**
@@ -204,7 +232,7 @@ public:
  */
 class URB_Protheroe96: public TabularPhotonField {
 public:
-	URB_Protheroe96() : TabularPhotonField("URB_Protheroe96", false) {}
+	URB_Protheroe96() : TabularPhotonField("URB_Protheroe96", false, false) {}
 };
 
 /**
@@ -219,7 +247,7 @@ public:
  */
 class URB_Fixsen11: public TabularPhotonField {
 public:
-	URB_Fixsen11() : TabularPhotonField("URB_Fixsen11", false) {}
+	URB_Fixsen11() : TabularPhotonField("URB_Fixsen11", false, false) {}
 };
 
 /**
@@ -232,7 +260,12 @@ public:
  */
 class URB_Nitu21: public TabularPhotonField {
 public:
-	URB_Nitu21() : TabularPhotonField("URB_Nitu21", false) {}
+	URB_Nitu21() : TabularPhotonField("URB_Nitu21", false, false) {}
+};
+
+class ISRF_f98: public TabularSpatialPhotonField {
+public:
+    ISRF_f98() : TabularSpatialPhotonField("ISRF_f98", false, true) {}
 };
 
 /**
@@ -242,9 +275,9 @@ public:
 class BlackbodyPhotonField: public PhotonField {
 public:
 	BlackbodyPhotonField(const std::string fieldName, const double blackbodyTemperature);
-	double getPhotonDensity(double ePhoton, double z = 0.) const;
-	double getMinimumPhotonEnergy(double z) const;
-	double getMaximumPhotonEnergy(double z) const;
+	double getPhotonDensity(const double ePhoton = 0., double z = 0., const Vector3d &pos = Vector3d(0.,0.,0.)) const;
+	double getMinimumPhotonEnergy(double z, const Vector3d &pos = Vector3d(0.,0.,0.)) const;
+	double getMaximumPhotonEnergy(double z, const Vector3d &pos = Vector3d(0.,0.,0.)) const;
 	void setQuantile(double q);
 
 protected:
