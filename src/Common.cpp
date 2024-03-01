@@ -69,11 +69,14 @@ double interpolate(double x, const std::vector<double> &X,
 		const std::vector<double> &Y) {
 	std::vector<double>::const_iterator it = std::upper_bound(X.begin(),
 			X.end(), x);
-	if (it == X.begin())
-		return Y.front();
-	if (it == X.end())
-		return Y.back();
-
+    if (it == X.begin()) {
+        //std::cout << 'I am at the beginning!' << std::endl;
+        return Y.front();
+    }
+    if (it == X.end()) {
+        //std::cout << 'I am at the end!' << std::endl;
+        return Y.back();
+    }
 	size_t i = it - X.begin() - 1;
 	return Y[i] + (x - X[i]) * (Y[i + 1] - Y[i]) / (X[i + 1] - X[i]);
 }

@@ -191,7 +191,7 @@ public:
 	}
 
 	void swap(ref_ptr& rp) {
-		T* tmp = _ptr;
+        T* tmp = _ptr;
 		_ptr = rp._ptr;
 		rp._ptr = tmp;
 	}

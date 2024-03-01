@@ -322,6 +322,9 @@ class PPSecondariesEnergyDistribution {
 		double sample(double E0, double s) {
 			// get distribution for given s
 			size_t idx = std::lower_bound(tab_s.begin(), tab_s.end(), s) - tab_s.begin();
+			if (idx > data.size())
+				return NAN;
+				
 			std::vector<double> s0 = data[idx];
 
 			// draw random bin
@@ -446,6 +449,7 @@ void EMPairProduction::performInteraction(Candidate *candidate) const {
     // cosmic ray photon is lost after interacting
     candidate->setActive(false);
 
+<<<<<<< HEAD
     // check if secondary electron pair needs to be produced
     if (not haveElectrons)
         return;
@@ -453,6 +457,11 @@ void EMPairProduction::performInteraction(Candidate *candidate) const {
     // check if in tabulated energy range
     if (E < tabE.front() or (E > tabE.back()))
         return;
+=======
+	// check if secondary electron pair needs to be produced
+	if (not haveElectrons)
+		return;
+>>>>>>> 90b021f654c7daf344725fe418ce1462773ce342
 
     // sample the value of s
     Random &random = Random::instance();
@@ -471,6 +480,7 @@ void EMPairProduction::performInteraction(Candidate *candidate) const {
     if (not std::isfinite(Ee) || not std::isfinite(Ep))
         return;
 
+<<<<<<< HEAD
     // sample random position along current step
     Vector3d pos = random.randomInterpolatedPosition(candidate->previous.getPosition(), candidate->current.getPosition());
     // apply sampling
@@ -482,6 +492,32 @@ void EMPairProduction::performInteraction(Candidate *candidate) const {
         double w = 1. / pow(1 - f, thinning);
         candidate->addSecondary(-11, Ee / (1 + z), pos, w, interactionTag);
     }
+=======
+	// sample electron / positron energy
+	static PPSecondariesEnergyDistribution interpolation;
+	double Ee = interpolation.sample(E, s);
+	double Ep = E - Ee;
+	double f = Ep / E;
+
+	// for some backgrounds Ee=nan due to precision limitations.
+	if (not std::isfinite(Ee) || not std::isfinite(Ep))
+		return;
+
+	// photon is lost after interacting
+	candidate->setActive(false);
+
+	// sample random position along current step
+	Vector3d pos = random.randomInterpolatedPosition(candidate->previous.getPosition(), candidate->current.getPosition());
+	// apply sampling
+	if (random.rand() < pow(f, thinning)) {
+		double w = 1. / pow(f, thinning);
+		candidate->addSecondary(11, Ep / (1 + z), pos, w, interactionTag);
+	}
+	if (random.rand() < pow(1 - f, thinning)){
+		double w = 1. / pow(1 - f, thinning);
+		candidate->addSecondary(-11, Ee / (1 + z), pos, w, interactionTag);	
+	}
+>>>>>>> 90b021f654c7daf344725fe418ce1462773ce342
 }
 
 void EMPairProduction::process(Candidate *candidate) const {
