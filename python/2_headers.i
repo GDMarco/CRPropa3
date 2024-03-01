@@ -48,6 +48,7 @@ using namespace crpropa;   // for usage of namespace in header files, necessary
 %ignore operator crpropa::ObserverFeature*;
 %ignore operator crpropa::MagneticField*;
 %ignore operator crpropa::PhotonField*;
+%ignore operator crpropa::InteractionRates*; // new
 %ignore operator crpropa::AdvectionField*;
 %ignore operator crpropa::ParticleCollector*;
 %ignore operator crpropa::Density*;
@@ -399,7 +400,15 @@ using namespace crpropa;   // for usage of namespace in header files, necessary
 %implicitconv crpropa::ref_ptr<crpropa::PhotonField>;
 %template(PhotonFieldRefPtr) crpropa::ref_ptr<crpropa::PhotonField>;
 %feature("director") crpropa::PhotonField;
-%include "crpropa/PhotonBackground.h"
+%include "crpropa/PhotonBackground.h";
+
+%implicitconv crpropa::ref_ptr<crpropa::InteractionRates>; // new
+%template(InteractionRatesRefPtr) crpropa::ref_ptr<crpropa::InteractionRates>;
+%feature("director") crpropa::InteractionRates;
+%include "crpropa/InteractionRates.h"
+
+//%implicitconv crpropa::ref_ptr<crpropa::InteractionRatesIsotropic::InteractionRatesIsotropic>;
+//%implicitconv crpropa::ref_ptr<crpropa::InteractionRatesPositionDependent::InteractionRatesPositionDependent>;
 
 %implicitconv crpropa::ref_ptr<crpropa::AdvectionField>;
 %template(AdvectionFieldRefPtr) crpropa::ref_ptr<crpropa::AdvectionField>;
