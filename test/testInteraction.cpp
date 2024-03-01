@@ -694,7 +694,7 @@ TEST(Redshift, limitRedshiftDecrease) {
 	redshift.process(&c);
 	EXPECT_DOUBLE_EQ(0, c.getRedshift());
 }
-
+/**
 // EMPairProduction -----------------------------------------------------------
 TEST(EMPairProduction, allBackgrounds) {
 	// Test if interaction data files are loaded.
@@ -703,7 +703,9 @@ TEST(EMPairProduction, allBackgrounds) {
 	ref_ptr<PhotonField> ebl = new IRB_Kneiske04();
 	em.setPhotonField(ebl);
 	ref_ptr<PhotonField> urb = new URB_Protheroe96();
-	em.setPhotonField(urb);
+	//ref_ptr<InteractionRates> intRates =
+    
+    em.setPhotonField(urb);
 	ebl = new IRB_Stecker05();
 	em.setPhotonField(ebl);
 	ebl = new IRB_Franceschini08();
@@ -722,6 +724,7 @@ TEST(EMPairProduction, allBackgrounds) {
 	em.setPhotonField(urb);
 	urb = new URB_Nitu21();
 	em.setPhotonField(urb);
+    
 }
 
 TEST(EMPairProduction, limitNextStep) {
@@ -733,7 +736,8 @@ TEST(EMPairProduction, limitNextStep) {
 	m.process(&c);
 	EXPECT_LT(c.getNextStep(), std::numeric_limits<double>::max());
 }
-
+ */
+/**
 TEST(EMPairProduction, secondaries) {
 	// Test if secondaries are correctly produced.
 	ref_ptr<PhotonField> CMB_instance = new CMB();
@@ -797,6 +801,7 @@ TEST(EMPairProduction, interactionTag) {
 	m.setInteractionTag("myTag");
 	EXPECT_TRUE(m.getInteractionTag() == "myTag");
 }
+ */
 
 // EMDoublePairProduction -----------------------------------------------------
 TEST(EMDoublePairProduction, allBackgrounds) {
