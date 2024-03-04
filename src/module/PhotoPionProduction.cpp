@@ -416,8 +416,9 @@ SophiaEventOutput PhotoPionProduction::sophiaEvent(bool onProton, double Ein, do
 double PhotoPionProduction::sampleEps(bool onProton, double E, double z) const {
 	// sample eps between epsMin ... epsMax
 	double Ein = E / GeV;
-	double epsMin = std::max(photonField -> getMinimumPhotonEnergy(z) / eV, epsMinInteraction(onProton, Ein));
-	double epsMax = photonField -> getMaximumPhotonEnergy(z) / eV;
+    Vector3d pos0 = Vector3d(0.,0.,0.);
+	double epsMin = std::max(photonField -> getMinimumPhotonEnergy(z, pos0) / eV, epsMinInteraction(onProton, Ein));
+	double epsMax = photonField -> getMaximumPhotonEnergy(z, pos0) / eV;
 	double pEpsMax = probEpsMax(onProton, Ein, z, epsMin, epsMax);
 
 	Random &random = Random::instance();
