@@ -1,4 +1,4 @@
-#include "InteractionRates.h"
+#include "crpropa/InteractionRates.h"
 #include "crpropa/Referenced.h"
 #include "crpropa/Vector3.h"
 
