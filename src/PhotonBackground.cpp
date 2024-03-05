@@ -253,8 +253,7 @@ TabularSpatialPhotonField::TabularSpatialPhotonField(std::string fieldName, bool
             std::vector<double> vD = readPhotonDensity(dir_entry.path().string()); // filename: + this->FieldName + pos + "_photonDensity.txt");
             
             this->photonDensity.push_back(vD);
-            
-            //deallocateVector(vD);
+    
         }
         
         checkInputData();
@@ -285,24 +284,10 @@ double TabularSpatialPhotonField::getPhotonDensity(const double ePhoton, double 
         }
     }
     
-    //std::cout << dMin << std::endl;
-    //std::cout << iMin << std::endl;
-    
     if (iMin == -1) {
         return -1.;
     } else {
         
-        //std::cout << 'Row of energies: ' << std::endl;
-        /**
-        for (double value : rowE) {
-                    std::cout << value << " ";
-                }
-       
-        //std::cout << 'Row of densities: ' << std::endl;
-        for (double value : rowD) {
-                    std::cout << value << " ";
-                }
-         */
         if ((ePhoton < photonEnergies[iMin][0]) || (ePhoton > photonEnergies[iMin][photonEnergies[iMin].size() - 1])){
             return 0;
         } else {
