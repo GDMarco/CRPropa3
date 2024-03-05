@@ -35,37 +35,17 @@ public:
     
     InteractionRatesIsotropic();
     
-    std::vector<double> getabEnergy() { //Isotropic
-        return tabEnergy;
-    }
-    std::vector<double> getabRate() {
-        return tabRate;
-    }
-    std::vector<double> getabE() {
-        return tabE;
-    }
-    std::vector<double> getabs() {
-        return tabs;
-    }
-    std::vector<std::vector<double>> getabCDF() {
-        return tabCDF;
-    }
+    std::vector<double> getabEnergy();
+    std::vector<double> getabRate();
+    std::vector<double> getabE();
+    std::vector<double> getabs();
+    std::vector<std::vector<double>> getabCDF();
     
-    void setabEnergy (std::vector<double>& newtabEnergy) {
-        tabEnergy = newtabEnergy;
-    }
-    void setabRate (std::vector<double>& newtabRate) {
-        tabRate = newtabRate;
-    }
-    void setabE (std::vector<double>& newtabE) {
-        tabE = newtabE;
-    }
-    void setabs (std::vector<double>& newtabs) {
-        tabs = newtabs;
-    }
-    void setabCDF (std::vector<std::vector<double>>& newtabCDF) {
-        tabCDF = newtabCDF;
-    }
+    void setabEnergy (std::vector<double>& newtabEnergy);
+    void setabRate (std::vector<double>& newtabRate);
+    void setabE (std::vector<double>& newtabE);
+    void setabs (std::vector<double>& newtabs);
+    void setabCDF (std::vector<std::vector<double>>& newtabCDF);
     
 protected:
     
@@ -85,43 +65,19 @@ public:
     
     InteractionRatesPositionDependent();
     
-    std::vector<std::vector<double>> getabEnergy() { //PositionDependent
-        return tabEnergy;
-    }
-    std::vector<std::vector<double>> getabRate() {
-        return tabRate;
-    }
-    std::vector<std::vector<double>> getabE() {
-        return tabE;
-    }
-    std::vector<std::vector<double>> getabs() {
-        return tabs;
-    }
-    std::vector<std::vector<std::vector<double>>> getabCDF() {
-        return tabCDF;
-    }
-    std::unordered_map<int, Vector3d> getphotonDict() {
-        return photonDict;
-    }
+    std::vector<std::vector<double>> getabEnergy();
+    std::vector<std::vector<double>> getabRate();
+    std::vector<std::vector<double>> getabE();
+    std::vector<std::vector<double>> getabs();
+    std::vector<std::vector<std::vector<double>>> getabCDF();
+    std::unordered_map<int, Vector3d> getphotonDict();
     
-    void setabEnergy (std::vector<std::vector<double>>& newtabEnergy) {
-        tabEnergy = newtabEnergy;
-    }
-    void setabRate (std::vector<std::vector<double>>& newtabRate) {
-        tabRate = newtabRate;
-    }
-    void setabE (std::vector<std::vector<double>>& newtabE) {
-        tabE = newtabE;
-    }
-    void setabs (std::vector<std::vector<double>>& newtabs) {
-        tabs = newtabs;
-    }
-    void setabCDF (std::vector<std::vector<std::vector<double>>>& newtabCDF) {
-        tabCDF = newtabCDF;
-    }
-    void setphotonDict (std::unordered_map<int, Vector3d>& newphotonDict) {
-        photonDict = newphotonDict;
-    }
+    void setabEnergy (std::vector<std::vector<double>>& newtabEnergy);
+    void setabRate (std::vector<std::vector<double>>& newtabRate);
+    void setabE (std::vector<std::vector<double>>& newtabE);
+    void setabs (std::vector<std::vector<double>>& newtabs);
+    void setabCDF (std::vector<std::vector<std::vector<double>>>& newtabCDF);
+    void setphotonDict (std::unordered_map<int, Vector3d>& newphotonDict);
 
 
 protected:
