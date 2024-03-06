@@ -388,16 +388,10 @@ void EMPairProduction::getPerformInteractionTabs(const Vector3d &position, std::
 void EMPairProduction::getProcessTabs(const Vector3d &position, std::vector<double> &tabEnergy, std::vector<double> &tabRate) const {
     if (!this->photonField->hasSpatialDependence()) {
         
-        std::cout << "here process tabs" << std::endl;
-        
         InteractionRatesIsotropic* intRateIso = static_cast<InteractionRatesIsotropic*>(this->interactionRates.get());
-        
-        std::cout << "here process tabs pointer" << std::endl;
         
         tabEnergy = intRateIso->getabEnergy();
         tabRate = intRateIso->getabRate();
-        
-        std::cout << "here process tabs assigned" << std::endl;
         
     } else {
         

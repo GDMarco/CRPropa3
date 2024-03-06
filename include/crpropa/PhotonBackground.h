@@ -107,7 +107,6 @@ public:
     double getMaximumPhotonEnergy(double z, const Vector3d &pos = Vector3d(0.,0.,0.)) const;
 
 protected:
-    
     std::vector<double> readPhotonEnergy(std::string filePath);
     std::vector<double> readPhotonDensity(std::string filePath);
     void checkInputData() const;
@@ -304,16 +303,15 @@ public:
 
 /**
  @class ISRF
- @brief Interstellar radiation field model by Freudenreich et al. (1998) implemented in
+ @brief Interstellar radiation field model by Freudenreich et al. (1998) implemented in Porter et al. (2017)
  
  Source info:
  DOI:
  https://iopscience.iop.org/article/10.3847/1538-4357/aa844d
- 
  */
-class ISRF_f98: public TabularSpatialPhotonField {
+class ISRF_Freudenreich98: public TabularSpatialPhotonField {
 public:
-    ISRF_f98() : TabularSpatialPhotonField("ISRF_f98", false, true) {}
+    ISRF_Freudenreich98() : TabularSpatialPhotonField("ISRF_Freudenreich98", false, false) {}
 };
 
 /**

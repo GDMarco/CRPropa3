@@ -335,7 +335,7 @@ CRPropa should compile, but will likely not work properly! Please install data f
 endif()
 
 # ----------------------------------------------------------------------------
-# Library and Binary
+# Library and Binary 
 # ----------------------------------------------------------------------------
 file(GLOB_RECURSE CRPROPA_INCLUDES RELATIVE ${CMAKE_SOURCE_DIR} include/*.h)
 include_directories(include ${CRPROPA_EXTRA_INCLUDES})

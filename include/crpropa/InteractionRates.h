@@ -93,13 +93,6 @@ protected:
     std::unordered_map<int, Vector3d> photonDict;
 };
 
-//default constructors
-InteractionRatesIsotropic::InteractionRatesIsotropic() : InteractionRates() { };
-
-InteractionRatesPositionDependent::InteractionRatesPositionDependent() : InteractionRates() { };
-
-// maybe I need to initialise the functions in each!
-
 } // namespace crpropa
 
 #endif // CRPROPA_INTERACTIONRATES_H

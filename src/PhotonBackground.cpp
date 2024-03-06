@@ -39,7 +39,7 @@ TabularPhotonField::TabularPhotonField(std::string fieldName, bool isRedshiftDep
 
 
 double TabularPhotonField::getPhotonDensity(double Ephoton, double z, const Vector3d &pos) const {
-	if ((this->isRedshiftDependent)) {
+	if (this->isRedshiftDependent) {
 		// fix behaviour for future redshift. See issue #414
 		// with redshift < 0 the photon density is set to 0 in interpolate2d. 
 		// Therefore it is assumed that the photon density does not change from values at z = 0. This is only valid for small changes in redshift.
@@ -56,7 +56,6 @@ double TabularPhotonField::getPhotonDensity(double Ephoton, double z, const Vect
 		return interpolate(Ephoton, this->photonEnergies, this->photonDensity);
 	}
 }
-
 
 double TabularPhotonField::getRedshiftScaling(double z) const {
 	if (!this->isRedshiftDependent)
@@ -182,7 +181,7 @@ void TabularPhotonField::checkInputData() const {
 }
 
 /**
-Tabular spatial photon field, _photonEnergy and _photonDensity files have to be into different repositories.
+Tabular spatial photon field, _photonEnergy.txt and _photonDensity.txt files have to be into different repositories.
 */
 TabularSpatialPhotonField::TabularSpatialPhotonField(std::string fieldName, bool isRedshiftDependent, bool isSpatialDependent) {
     this->fieldName = fieldName;
@@ -194,15 +193,15 @@ TabularSpatialPhotonField::TabularSpatialPhotonField(std::string fieldName, bool
         KISS_LOG_WARNING << "Photon Field " << fieldName << " is redshift dependent! It is not the correct class. \n";
         exit(1); // to check
         
-    } else if (!this->isSpatialDependent) {
+    } else if (!this->isSpatialDependent) { 
         
         KISS_LOG_WARNING << "Photon Field " << fieldName << " is not spatial dependent! It is not the correct class. \n";
         exit(1); // to check
         
     } else {
-        
+        std::cout << "enter TabPhotonField" << std::endl;
         std::__fs::filesystem::path dirE = getDataPath("") + "Scaling/" + this->fieldName + "/photonEnergy/";
-        
+        std::cout << "dirE TabPhotonField" << std::endl;
         std::unordered_map<int, Vector3d> photonDict;
         int iFile = 0;
         
@@ -256,9 +255,7 @@ TabularSpatialPhotonField::TabularSpatialPhotonField(std::string fieldName, bool
             this->photonDensity.push_back(vD);
             
         }
-        
         checkInputData();
-
     }
 }
 
@@ -315,7 +312,6 @@ double TabularSpatialPhotonField::getMinimumPhotonEnergy(double z, const Vector3
             iMin = el.first;
         }
     }
-    
     return photonEnergies[iMin][0];
 }
 
@@ -335,7 +331,6 @@ double TabularSpatialPhotonField::getMaximumPhotonEnergy(double z, const Vector3
             iMin = el.first;
         }
     }
-    
     return photonEnergies[iMin][photonEnergies[iMin].size() - 1];
 }
 
