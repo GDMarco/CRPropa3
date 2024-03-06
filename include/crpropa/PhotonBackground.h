@@ -24,7 +24,7 @@ public:
 	PhotonField() {
 		this->fieldName = "AbstractPhotonField";
 		this->isRedshiftDependent = false;
-        this->isSpatialDependent = false;
+    this->isPositionDependent = false;
 	}
 
 	/**
@@ -53,8 +53,8 @@ public:
 		return this->isRedshiftDependent;
 	}
     
-    bool hasSpatialDependence() const {
-        return this->isSpatialDependent; 
+    bool hasPositionDependence() const {
+        return this->isPositionDependent; 
     }
 
 	void setFieldName(std::string fieldName) {
@@ -64,7 +64,7 @@ public:
 protected:
 	std::string fieldName;
 	bool isRedshiftDependent;
-    bool isSpatialDependent;
+  bool isPositionDependent;
 };
 
 /**
@@ -78,7 +78,7 @@ protected:
  */
 class TabularPhotonField: public PhotonField {
 public:
-	TabularPhotonField(const std::string fieldName, const bool isRedshiftDependent = true, const bool isSpatialDependent = true);
+	TabularPhotonField(const std::string fieldName, const bool isRedshiftDependent = true, const bool isPositionDependent = true);
 
 	double getPhotonDensity(double ePhoton, double z = 0., const Vector3d &pos = Vector3d(0.,0.,0.)) const;
 	double getRedshiftScaling(double z) const;
@@ -110,7 +110,7 @@ protected:
  */
 class TabularSpatialPhotonField: public PhotonField {
 public:
-    TabularSpatialPhotonField(const std::string fieldName, const bool isRedshiftDependent = true, const bool isSpatialDependent = true);
+    TabularSpatialPhotonField(const std::string fieldName, const bool isRedshiftDependent = true, const bool isPositionDependent = true);
     
     double getPhotonDensity(double ePhoton = 0., double z = 0., const Vector3d &pos = Vector3d(0.,0.,0.)) const;
     double getMinimumPhotonEnergy(double z, const Vector3d &pos = Vector3d(0.,0.,0.)) const;
