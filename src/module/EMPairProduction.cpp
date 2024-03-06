@@ -471,16 +471,6 @@ void EMPairProduction::performInteraction(Candidate *candidate) const {
     if (not std::isfinite(Ee) || not std::isfinite(Ep))
         return;
 
-	// sample electron / positron energy
-	static PPSecondariesEnergyDistribution interpolation;
-	double Ee = interpolation.sample(E, s);
-	double Ep = E - Ee;
-	double f = Ep / E;
-
-	// for some backgrounds Ee=nan due to precision limitations.
-	if (not std::isfinite(Ee) || not std::isfinite(Ep))
-		return;
-
 	// photon is lost after interacting
 	candidate->setActive(false);
 
