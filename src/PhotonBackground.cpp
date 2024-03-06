@@ -1,7 +1,7 @@
 #include "crpropa/PhotonBackground.h"
 #include "crpropa/Units.h"
 #include "crpropa/Random.h"
-#include "crpropa/Vector.h"
+#include "crpropa/Vector3.h"
 
 #include "kiss/logger.h"
 
