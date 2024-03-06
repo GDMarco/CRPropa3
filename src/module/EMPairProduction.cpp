@@ -31,7 +31,7 @@ void EMPairProduction::setPhotonField(ref_ptr<PhotonField> photonField) {
 	std::string fname = photonField->getFieldName();
 	setDescription("EMPairProduction: " + fname);
     
-    if (!this->photonField->hasSpatialDependence()){
+    if (!this->photonField->hasPositionDependence()){
         
         this->interactionRates = new InteractionRatesIsotropic();
         InteractionRatesIsotropic* intRatesIso = static_cast<InteractionRatesIsotropic*>(this->interactionRates.get()); //there's the dedicated function in CRPropa
@@ -44,8 +44,8 @@ void EMPairProduction::setPhotonField(ref_ptr<PhotonField> photonField) {
         this->interactionRates = new InteractionRatesPositionDependent();
         InteractionRatesPositionDependent* intRatesPosDep = static_cast<InteractionRatesPositionDependent*>(this->interactionRates.get());
         
-        initRateSpatialDependentPhotonField(getDataPath("EMPairProduction/"+fname+"/Rate/"), intRatesPosDep);
-        initCumulativeRateSpatialDependentPhotonField(getDataPath("EMPairProduction/"+fname+"/CumulativeRate/"), intRatesPosDep);
+        initRatePositionDependentPhotonField(getDataPath("EMPairProduction/"+fname+"/Rate/"), intRatesPosDep);
+        initCumulativeRatePositionDependentPhotonField(getDataPath("EMPairProduction/"+fname+"/CumulativeRate/"), intRatesPosDep);
         
     }
 }
@@ -96,7 +96,7 @@ std::string EMPairProduction::splitFilename(const std::string str) {
             return s;
     }
                                                        
-void EMPairProduction::initRateSpatialDependentPhotonField(std::string filepath, InteractionRatesPositionDependent* intRatesPosDep) {
+void EMPairProduction::initRatePositionDependentPhotonField(std::string filepath, InteractionRatesPositionDependent* intRatesPosDep) {
     
     std::vector<std::vector<double>> tabEnergy;
     std::vector<std::vector<double>> tabRate;
@@ -211,7 +211,7 @@ void EMPairProduction::initCumulativeRate(std::string filename, InteractionRates
     intRatesIso->setabCDF(tabCDF);
 }
 
-void EMPairProduction::initCumulativeRateSpatialDependentPhotonField(std::string filepath, InteractionRatesPositionDependent* intRatesPosDep) {
+void EMPairProduction::initCumulativeRatePositionDependentPhotonField(std::string filepath, InteractionRatesPositionDependent* intRatesPosDep) {
     
     std::vector<std::vector<double>> tabE;
     std::vector<std::vector<double>> tabs;
@@ -343,7 +343,7 @@ class PPSecondariesEnergyDistribution {
 };
 
 void EMPairProduction::getPerformInteractionTabs(const Vector3d &position, std::vector<double> &tabE, std::vector<double> &tabs, std::vector<std::vector<double>> &tabCDF) const {
-    if (!this->photonField->hasSpatialDependence()){
+    if (!this->photonField->hasPositionDependence()){
         
         InteractionRatesIsotropic* intRateIso = static_cast<InteractionRatesIsotropic*>(this->interactionRates.get());
         
@@ -382,7 +382,7 @@ void EMPairProduction::getPerformInteractionTabs(const Vector3d &position, std::
 }
 
 void EMPairProduction::getProcessTabs(const Vector3d &position, std::vector<double> &tabEnergy, std::vector<double> &tabRate) const {
-    if (!this->photonField->hasSpatialDependence()) {
+    if (!this->photonField->hasPositionDependence()) {
         
         InteractionRatesIsotropic* intRateIso = static_cast<InteractionRatesIsotropic*>(this->interactionRates.get());
         
