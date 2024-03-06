@@ -1,6 +1,7 @@
 #include "crpropa/PhotonBackground.h"
 #include "crpropa/Units.h"
 #include "crpropa/Random.h"
+#include "crpropa/Vector.h"
 
 #include "kiss/logger.h"
 
@@ -8,6 +9,10 @@
 #include <stdexcept>
 #include <limits>
 #include <cmath>
+#include <filesystem>
+#include <string>
+#include <sstream>
+#include <unordered_map>
 
 namespace crpropa {
 
@@ -187,12 +192,12 @@ TabularSpatialPhotonField::TabularSpatialPhotonField(std::string fieldName, bool
     if (this->isRedshiftDependent) {
         
         KISS_LOG_WARNING << "Photon Field " << fieldName << " is redshift dependent! It is not the correct class. \n";
-        exit(1);
+        exit(1); // to check
         
     } else if (!this->isSpatialDependent) {
         
         KISS_LOG_WARNING << "Photon Field " << fieldName << " is not spatial dependent! It is not the correct class. \n";
-        exit(1);
+        exit(1); // to check
         
     } else {
         
