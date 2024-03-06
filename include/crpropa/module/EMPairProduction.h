@@ -6,6 +6,7 @@
 
 #include "crpropa/Module.h"
 #include "crpropa/PhotonBackground.h"
+#include "crpropa/InteractionRates.h"
 
 
 namespace crpropa {
@@ -33,16 +34,8 @@ private:
 	double limit;						// limit the step to a fraction of the mean free path
 	double thinning;					// factor of the thinning (0: no thinning, 1: maximum thinning)
 	std::string interactionTag = "EMPP";
-
-	// tabulated interaction rate 1/lambda(E)
-	std::vector<double> tabEnergy;  //!< electron energy in [J]
-	std::vector<double> tabRate;  //!< interaction rate in [1/m]
-	
-	// tabulated CDF(s_kin, E) = cumulative differential interaction rate
-	std::vector<double> tabE;  //!< electron energy in [J]
-	std::vector<double> tabs;  //!< s_kin = s - m^2 in [J**2]
-	std::vector< std::vector<double> > tabCDF;  //!< cumulative interaction rate
-
+    ref_ptr<InteractionRates> interactionRates;
+    
 public:
 	/** Constructor
 	 @param photonField		target photon field
@@ -50,10 +43,10 @@ public:
 	 @param thinning		weighted sampling of secondaries (0: all particles are tracked; 1: maximum thinning)
 	 @param limit			step size limit as fraction of mean free path
 	 */
-	EMPairProduction(ref_ptr<PhotonField> photonField, bool haveElectrons = false, double thinning = 0,double limit = 0.1);
+	EMPairProduction(ref_ptr<PhotonField> photonField, bool haveElectrons = false, double thinning = 0, double limit = 0.1); //, ref_ptr<InteractionRates> interactionRates
 
 	// set the target photon field
-	void setPhotonField(ref_ptr<PhotonField> photonField);
+	void setPhotonField(ref_ptr<PhotonField> photonField); //, ref_ptr<InteractionRates> interactionRates
 
 	// decide if secondary electrons are added to the simulation
 	void setHaveElectrons(bool haveElectrons);
@@ -74,14 +67,23 @@ public:
 	void setInteractionTag(std::string tag);
 	std::string getInteractionTag() const;
 
-	void initRate(std::string filename);
-	void initCumulativeRate(std::string filename);
+    void initRate(std::string filename, InteractionRatesIsotropic* intRatesIso);
+    void initCumulativeRate(std::string filename, InteractionRatesIsotropic* intRatesIso);
+    
+    void initRateSpatialDependentPhotonField(std::string filepath, InteractionRatesPositionDependent* intRatesPosDep);
+    void initCumulativeRateSpatialDependentPhotonField(std::string filepath, InteractionRatesPositionDependent* intRatesPosDep);
 
+    void getPerformInteractionTabs(const Vector3d &position, std::vector<double> &tabE, std::vector<double> &tabs, std::vector<std::vector<double>> &tabCDF) const;
+    void getProcessTabs(const Vector3d &position, std::vector<double> &tabEnergy, std::vector<double> &tabRate) const;
+    
 	void performInteraction(Candidate *candidate) const;
 	void process(Candidate *candidate) const;
-};
-/** @}*/
 
+protected:
+    
+    std::string splitFilename (const std::string str);
+    
+};
 
 } // namespace crpropa
 
