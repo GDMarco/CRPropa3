@@ -16,13 +16,13 @@
 
 namespace crpropa {
 
-TabularPhotonField::TabularPhotonField(std::string fieldName, bool isRedshiftDependent, bool isSpatialDependent) {
+TabularPhotonField::TabularPhotonField(std::string fieldName, bool isRedshiftDependent, bool isPositionDependent) {
 	this->fieldName = fieldName;
 	this->isRedshiftDependent = isRedshiftDependent;
-    this->isSpatialDependent = isSpatialDependent;
+  this->isPositionDependent = isPositionDependent;
 
-    if (this->isSpatialDependent) {
-        KISS_LOG_WARNING << "Photon Field " << fieldName << " is spatial dependent! It is not the correct class. \n";
+    if (this->isPositionDependent) {
+        KISS_LOG_WARNING << "Photon Field " << fieldName << " is position dependent! It is not the correct class. \n";
         exit(1); // to check! 
     } else {
         readPhotonEnergy(getDataPath("") + "Scaling/" + this->fieldName + "_photonEnergy.txt");
@@ -180,19 +180,19 @@ void TabularPhotonField::checkInputData() const {
 	}
 }
 
-TabularSpatialPhotonField::TabularSpatialPhotonField(std::string fieldName, bool isRedshiftDependent, bool isSpatialDependent) {
+TabularSpatialPhotonField::TabularSpatialPhotonField(std::string fieldName, bool isRedshiftDependent, bool isPositionDependent) {
     this->fieldName = fieldName;
     this->isRedshiftDependent = isRedshiftDependent;
-    this->isSpatialDependent = isSpatialDependent;
+    this->isPositionDependent = isPositionDependent;
     
     if (this->isRedshiftDependent) {
         
         KISS_LOG_WARNING << "Photon Field " << fieldName << " is redshift dependent! It is not the correct class. \n";
         exit(1); // to check
         
-    } else if (!this->isSpatialDependent) { 
+    } else if (!this->isPositionDependent) { 
         
-        KISS_LOG_WARNING << "Photon Field " << fieldName << " is not spatial dependent! It is not the correct class. \n";
+        KISS_LOG_WARNING << "Photon Field " << fieldName << " is not position dependent! It is not the correct class. \n";
         exit(1); // to check
         
     } else {
