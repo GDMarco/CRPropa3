@@ -180,9 +180,6 @@ void TabularPhotonField::checkInputData() const {
 	}
 }
 
-/**
-Tabular spatial photon field, _photonEnergy.txt and _photonDensity.txt files have to be into different repositories.
-*/
 TabularSpatialPhotonField::TabularSpatialPhotonField(std::string fieldName, bool isRedshiftDependent, bool isSpatialDependent) {
     this->fieldName = fieldName;
     this->isRedshiftDependent = isRedshiftDependent;
@@ -199,9 +196,8 @@ TabularSpatialPhotonField::TabularSpatialPhotonField(std::string fieldName, bool
         exit(1); // to check
         
     } else {
-        std::cout << "enter TabPhotonField" << std::endl;
+        
         std::__fs::filesystem::path dirE = getDataPath("") + "Scaling/" + this->fieldName + "/photonEnergy/";
-        std::cout << "dirE TabPhotonField" << std::endl;
         std::unordered_map<int, Vector3d> photonDict;
         int iFile = 0;
         

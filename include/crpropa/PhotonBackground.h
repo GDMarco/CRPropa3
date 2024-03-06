@@ -98,11 +98,21 @@ protected:
 	std::vector<double> redshiftScalings;
 };
 
+/**
+ @class TabularSpatialPhotonField
+ @brief Position dependent photon field decorator for tabulated photon fields.
+
+ This class reads photon field data from files in the appropriate directory;
+ The first files must be lists of photon energies [J], named fieldName_photonEnergy.txt and contained in the subdirectory /photonEnegy/;
+ The second files must be lists of comoving photon field densities [1/m^3], named fieldName_photonDensity.txt and contained in the subdirectory /photonDensity/;
+ The generated files through the CRPropa procedure (https://crpropa.github.io/CRPropa3/pages/example_notebooks/custom_photonfield/custom-photon-field.html) have a different ordering: the energy bins from the larger to the lower.
+ No redshift dependence is available.
+ */
 class TabularSpatialPhotonField: public PhotonField {
 public:
     TabularSpatialPhotonField(const std::string fieldName, const bool isRedshiftDependent = true, const bool isSpatialDependent = true);
     
-    double getPhotonDensity(const double ePhoton = 0., double z = 0., const Vector3d &pos = Vector3d(0.,0.,0.)) const;
+    double getPhotonDensity(double ePhoton = 0., double z = 0., const Vector3d &pos = Vector3d(0.,0.,0.)) const;
     double getMinimumPhotonEnergy(double z, const Vector3d &pos = Vector3d(0.,0.,0.)) const;
     double getMaximumPhotonEnergy(double z, const Vector3d &pos = Vector3d(0.,0.,0.)) const;
 
@@ -311,7 +321,7 @@ public:
  */
 class ISRF_Freudenreich98: public TabularSpatialPhotonField {
 public:
-    ISRF_Freudenreich98() : TabularSpatialPhotonField("ISRF_Freudenreich98", false, false) {}
+    ISRF_Freudenreich98() : TabularSpatialPhotonField("ISRF_Freudenreich98", false, true) {}
 };
 
 /**

@@ -8,9 +8,9 @@
 
 namespace crpropa {
 
-//InteractionRatesIsotropic::InteractionRatesIsotropic();
+InteractionRatesIsotropic::InteractionRatesIsotropic() : InteractionRates() { }
 
-std::vector<double> InteractionRatesIsotropic::getabEnergy() { //Isotropic
+std::vector<double> InteractionRatesIsotropic::getabEnergy() {
     return tabEnergy;
 }
 
@@ -44,9 +44,9 @@ void InteractionRatesIsotropic::setabCDF (std::vector<std::vector<double>>& newt
     tabCDF = newtabCDF;
 }
 
-//InteractionRatesPositionDependent::InteractionRatesPositionDependent();
+InteractionRatesPositionDependent::InteractionRatesPositionDependent() : InteractionRates() {}
 
-std::vector<std::vector<double>> InteractionRatesPositionDependent::getabEnergy() { //PositionDependent
+std::vector<std::vector<double>> InteractionRatesPositionDependent::getabEnergy() {
     return tabEnergy;
 }
 std::vector<std::vector<double>> InteractionRatesPositionDependent::getabRate() {

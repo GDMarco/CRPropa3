@@ -374,14 +374,10 @@ void EMPairProduction::getPerformInteractionTabs(const Vector3d &position, std::
                 iMin = el.first;
             }
         }
-    
-        std::cout << "Position PI: " << position/kpc << std::endl;
-        std::cout << "iMin: " << iMin << std::endl;
         
         tabE = E[iMin];
         tabs = s[iMin];
         tabCDF = CDF[iMin];
-    
     }
 }
 
@@ -415,9 +411,6 @@ void EMPairProduction::getProcessTabs(const Vector3d &position, std::vector<doub
                 iMin = el.first;
             }
         }
-        
-        std::cout << "Position PI: " << position/kpc << std::endl;
-        std::cout << "iMin: " << iMin << std::endl;
         
         tabEnergy = Energy[iMin];
         tabRate = Rate[iMin];
