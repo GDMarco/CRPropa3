@@ -70,8 +70,8 @@ public:
     void initRate(std::string filename, InteractionRatesIsotropic* intRatesIso);
     void initCumulativeRate(std::string filename, InteractionRatesIsotropic* intRatesIso);
     
-    void initRateSpatialDependentPhotonField(std::string filepath, InteractionRatesPositionDependent* intRatesPosDep);
-    void initCumulativeRateSpatialDependentPhotonField(std::string filepath, InteractionRatesPositionDependent* intRatesPosDep);
+    void initRatePositionDependentPhotonField(std::string filepath, InteractionRatesPositionDependent* intRatesPosDep);
+    void initCumulativeRatePositionDependentPhotonField(std::string filepath, InteractionRatesPositionDependent* intRatesPosDep);
 
     void getPerformInteractionTabs(const Vector3d &position, std::vector<double> &tabE, std::vector<double> &tabs, std::vector<std::vector<double>> &tabCDF) const;
     void getProcessTabs(const Vector3d &position, std::vector<double> &tabEnergy, std::vector<double> &tabRate) const;
