@@ -6,6 +6,7 @@
 
 #include "crpropa/Module.h"
 #include "crpropa/PhotonBackground.h"
+#include "crpropa/InteractionRates.h"
 
 namespace crpropa {
 /**
@@ -31,10 +32,7 @@ private:
 	double limit;
 	double thinning;
 	std::string interactionTag = "EMDP";
-
-	// tabulated interaction rate 1/lambda(E)
-	std::vector<double> tabEnergy;  //!< electron energy in [J]
-	std::vector<double> tabRate;  //!< interaction rate in [1/m]
+    ref_ptr<InteractionRates> interactionRates;
 
 public:
 	/** Constructor
@@ -67,9 +65,17 @@ public:
 	void setInteractionTag(std::string tag);
 	std::string getInteractionTag() const;
 
-	void initRate(std::string filename);
-	void process(Candidate *candidate) const;
+	void initRate(std::string filename, InteractionRatesIsotropic* intRatesIso);
+	
+    void initRatePositionDependentPhotonField(std::string filepath, InteractionRatesPositionDependent* intRatesPosDep);
+    
+    void getProcessTabs(const Vector3d &position, std::vector<double> &tabEnergy, std::vector<double> &tabRate) const;
+    
+    void process(Candidate *candidate) const;
 	void performInteraction(Candidate *candidate) const;
+    
+protected:
+    std::string splitFilename (const std::string str);
 };
 /** @}*/
 

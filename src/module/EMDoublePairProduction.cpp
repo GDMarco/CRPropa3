@@ -1,10 +1,17 @@
 #include "crpropa/module/EMDoublePairProduction.h"
 #include "crpropa/Units.h"
 #include "crpropa/Random.h"
+#include "crpropa/PhotonBackground.h"
+#include "crpropa/InteractionRates.h"
 
 #include <fstream>
 #include <limits>
 #include <stdexcept>
+#include <filesystem>
+#include <string>
+#include <sstream>
+#include <unordered_map>
+#include <vector>
 
 namespace crpropa {
 
@@ -16,10 +23,23 @@ EMDoublePairProduction::EMDoublePairProduction(ref_ptr<PhotonField> photonField,
 }
 
 void EMDoublePairProduction::setPhotonField(ref_ptr<PhotonField> photonField) {
-	this->photonField = photonField;
+	
+    this->photonField = photonField;
 	std::string fname = photonField->getFieldName();
 	setDescription("EMDoublePairProduction: " + fname);
-	initRate(getDataPath("EMDoublePairProduction/rate_" + fname + ".txt"));
+    if (!this->photonField->hasPositionDependence()) {
+        
+        this->interactionRates = new InteractionRatesIsotropic();
+        InteractionRatesIsotropic* intRatesIso = static_cast<InteractionRatesIsotropic*>(this->interactionRates.get()); //there's the dedicated function in CRPropa
+        initRate(getDataPath("EMDoublePairProduction/rate_" + fname + ".txt"), intRatesIso);
+        
+    } else {
+        
+        this->interactionRates = new InteractionRatesPositionDependent();
+        InteractionRatesPositionDependent* intRatesPosDep = static_cast<InteractionRatesPositionDependent*>(this->interactionRates.get());
+        initRatePositionDependentPhotonField(getDataPath("EMDoublePairProduction/"+fname+"/Rate/"), intRatesPosDep);
+        
+    }
 }
 
 void EMDoublePairProduction::setHaveElectrons(bool haveElectrons) {
@@ -34,15 +54,14 @@ void EMDoublePairProduction::setThinning(double thinning) {
 	this->thinning = thinning;
 }
 
-void EMDoublePairProduction::initRate(std::string filename) {
+void EMDoublePairProduction::initRate(std::string filename, InteractionRatesIsotropic* intRatesIso) {
 	std::ifstream infile(filename.c_str());
 
+    std::vector<double> tabEnergy;
+    std::vector<double> tabRate;
+    
 	if (!infile.good())
 		throw std::runtime_error("EMDoublePairProduction: could not open file " + filename);
-
-	// clear previously loaded interaction rates
-	tabEnergy.clear();
-	tabRate.clear();
 
 	while (infile.good()) {
 		if (infile.peek() != '#') {
@@ -56,8 +75,126 @@ void EMDoublePairProduction::initRate(std::string filename) {
 		infile.ignore(std::numeric_limits < std::streamsize > ::max(), '\n');
 	}
 	infile.close();
+    
+    intRatesIso->setabEnergy(tabEnergy);
+    intRatesIso->setabRate(tabRate);
+    
 }
 
+std::string EMDoublePairProduction::splitFilename(const std::string str) {
+            std::size_t found = str.find_last_of("/\\");
+            std::string s = str.substr(found+1);
+            return s;
+}
+
+void EMDoublePairProduction::initRatePositionDependentPhotonField(std::string filepath, InteractionRatesPositionDependent* intRatesPosDep) {
+    
+    std::vector<std::vector<double>> tabEnergy;
+    std::vector<std::vector<double>> tabRate;
+    
+    std::__fs::filesystem::path dir = filepath;
+    std::unordered_map<int, Vector3d> photonDict;
+    int iFile = 0;
+    
+    for (auto const& dir_entry : std::__fs::filesystem::directory_iterator{dir}) {
+
+        // the input filename here should be a string
+        //check if it is correct, i.e. a proper filename string
+        std::string filename = dir_entry.path().string();
+        std::ifstream infile(filename.c_str());
+        
+        std::vector<double> vecEnergy;
+        std::vector<double> vecRate;
+        
+        if (!infile.good())
+            throw
+            std::runtime_error("EMDoublePairProduction: could not open file " + filename);
+        
+        while (infile.good()) {
+            if (infile.peek() != '#') {
+                double a, b;
+                infile >> a >> b;
+                if (infile) {
+                    vecEnergy.push_back(pow(10, a) * eV);
+                    vecRate.push_back(b / Mpc);
+                }
+            }
+            infile.ignore(std::numeric_limits < std::streamsize > ::max(), '\n');
+        }
+        
+        tabEnergy.push_back(vecEnergy);
+        tabRate.push_back(vecRate);
+        
+        double x, y, z;
+        std::string str;
+        std::stringstream ss;
+        
+        std::string filename_split = splitFilename(dir_entry.path().string());
+        ss << filename_split;
+        
+        int iLine = 0;
+        
+        while (getline(ss, str, '_')) {
+            if (iLine == 3) {
+                x = stod(str) * kpc;
+            }
+            if (iLine == 4) {
+                y = stod(str) * kpc;
+            }
+            if (iLine == 5) {
+                z = stod(str) * kpc;
+            }
+            iLine = iLine + 1;
+        }
+        
+        Vector3d vPos(x, y, z);
+        photonDict[iFile] = vPos;
+        
+        iFile = iFile + 1;
+        infile.close();
+    }
+    
+    intRatesPosDep->setabEnergy(tabEnergy);
+    intRatesPosDep->setabRate(tabRate);
+    intRatesPosDep->setphotonDict(photonDict);
+    
+}
+
+void EMDoublePairProduction::getProcessTabs(const Vector3d &position, std::vector<double> &tabEnergy, std::vector<double> &tabRate) const {
+    if (!this->photonField->hasPositionDependence()) {
+        
+        InteractionRatesIsotropic* intRateIso = static_cast<InteractionRatesIsotropic*>(this->interactionRates.get());
+        
+        tabEnergy = intRateIso->getabEnergy();
+        tabRate = intRateIso->getabRate();
+        
+    } else {
+        
+        InteractionRatesPositionDependent* intRatePosDep = static_cast<InteractionRatesPositionDependent*>(this->interactionRates.get());
+        
+        std::vector<std::vector<double>> Energy = intRatePosDep->getabEnergy();
+        std::vector<std::vector<double>> Rate = intRatePosDep->getabRate();
+        std::unordered_map<int,Vector3d> photonDict = intRatePosDep->getphotonDict();
+        
+        double dMin = 1000. * kpc;
+        int iMin = -1;
+        
+        for (const auto& el : photonDict) {
+            
+            Vector3d posNode = el.second;
+            double d;
+            d = sqrt((-posNode.x/kpc -position.x/kpc)*(-posNode.x/kpc-position.x/kpc)+(posNode.y/kpc-position.y/kpc)*(posNode.y/kpc-position.y/kpc)+(posNode.z/kpc-position.z/kpc)*(posNode.z/kpc-position.z/kpc));
+            
+            if (d<dMin) {
+                dMin = d;
+                iMin = el.first;
+            }
+        }
+        
+        tabEnergy = Energy[iMin];
+        tabRate = Rate[iMin];
+    }
+}
 
 void EMDoublePairProduction::performInteraction(Candidate *candidate) const {
 	// the photon is lost after the interaction
@@ -98,7 +235,13 @@ void EMDoublePairProduction::process(Candidate *candidate) const {
 	// scale the electron energy instead of background photons
 	double z = candidate->getRedshift();
 	double E = (1 + z) * candidate->current.getEnergy();
+    Vector3d position = candidate->current.getPosition();
 
+    std::vector<double> tabEnergy;
+    std::vector<double> tabRate;
+    
+    getProcessTabs(position, tabEnergy, tabRate);
+    
 	// check if in tabulated energy range
 	if (E < tabEnergy.front() or (E > tabEnergy.back()))
 		return;
