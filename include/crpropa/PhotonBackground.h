@@ -24,7 +24,7 @@ public:
 	PhotonField() {
 		this->fieldName = "AbstractPhotonField";
 		this->isRedshiftDependent = false;
-    this->isPositionDependent = false;
+        this->isPositionDependent = false;
 	}
 
 	/**
@@ -64,7 +64,7 @@ public:
 protected:
 	std::string fieldName;
 	bool isRedshiftDependent;
-  bool isPositionDependent;
+    bool isPositionDependent;
 };
 
 /**

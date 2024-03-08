@@ -29,13 +29,13 @@ void EMDoublePairProduction::setPhotonField(ref_ptr<PhotonField> photonField) {
 	setDescription("EMDoublePairProduction: " + fname);
     if (!this->photonField->hasPositionDependence()) {
         
-        this->interactionRates = new InteractionRatesIsotropic();
+        this->interactionRates = new InteractionRatesIsotropic("interactionRatesIsotropic", false);
         InteractionRatesIsotropic* intRatesIso = static_cast<InteractionRatesIsotropic*>(this->interactionRates.get()); //there's the dedicated function in CRPropa
         initRate(getDataPath("EMDoublePairProduction/rate_" + fname + ".txt"), intRatesIso);
         
     } else {
         
-        this->interactionRates = new InteractionRatesPositionDependent();
+        this->interactionRates = new InteractionRatesPositionDependent("interactionRatesPositionDependent", true);
         InteractionRatesPositionDependent* intRatesPosDep = static_cast<InteractionRatesPositionDependent*>(this->interactionRates.get());
         initRatePositionDependentPhotonField(getDataPath("EMDoublePairProduction/"+fname+"/Rate/"), intRatesPosDep);
         
@@ -76,8 +76,8 @@ void EMDoublePairProduction::initRate(std::string filename, InteractionRatesIsot
 	}
 	infile.close();
     
-    intRatesIso->setabEnergy(tabEnergy);
-    intRatesIso->setabRate(tabRate);
+    intRatesIso->setTabulatedEnergy(tabEnergy);
+    intRatesIso->setTabulatedRate(tabRate);
     
 }
 
@@ -154,9 +154,9 @@ void EMDoublePairProduction::initRatePositionDependentPhotonField(std::string fi
         infile.close();
     }
     
-    intRatesPosDep->setabEnergy(tabEnergy);
-    intRatesPosDep->setabRate(tabRate);
-    intRatesPosDep->setphotonDict(photonDict);
+    intRatesPosDep->setTabulatedEnergy(tabEnergy);
+    intRatesPosDep->setTabulatedRate(tabRate);
+    intRatesPosDep->setPhotonDict(photonDict);
     
 }
 
@@ -165,16 +165,16 @@ void EMDoublePairProduction::getProcessTabs(const Vector3d &position, std::vecto
         
         InteractionRatesIsotropic* intRateIso = static_cast<InteractionRatesIsotropic*>(this->interactionRates.get());
         
-        tabEnergy = intRateIso->getabEnergy();
-        tabRate = intRateIso->getabRate();
+        tabEnergy = intRateIso->getTabulatedEnergy();
+        tabRate = intRateIso->getTabulatedRate();
         
     } else {
         
         InteractionRatesPositionDependent* intRatePosDep = static_cast<InteractionRatesPositionDependent*>(this->interactionRates.get());
         
-        std::vector<std::vector<double>> Energy = intRatePosDep->getabEnergy();
-        std::vector<std::vector<double>> Rate = intRatePosDep->getabRate();
-        std::unordered_map<int,Vector3d> photonDict = intRatePosDep->getphotonDict();
+        std::vector<std::vector<double>> Energy = intRatePosDep->getTabulatedEnergy();
+        std::vector<std::vector<double>> Rate = intRatePosDep->getTabulatedRate();
+        std::unordered_map<int,Vector3d> photonDict = intRatePosDep->getPhotonDict();
         
         double dMin = 1000. * kpc;
         int iMin = -1;
@@ -183,7 +183,7 @@ void EMDoublePairProduction::getProcessTabs(const Vector3d &position, std::vecto
             
             Vector3d posNode = el.second;
             double d;
-            d = sqrt((-posNode.x/kpc -position.x/kpc)*(-posNode.x/kpc-position.x/kpc)+(posNode.y/kpc-position.y/kpc)*(posNode.y/kpc-position.y/kpc)+(posNode.z/kpc-position.z/kpc)*(posNode.z/kpc-position.z/kpc));
+            d = sqrt((- posNode.x / kpc - position.x / kpc) * (- posNode.x / kpc - position.x / kpc) + (posNode.y / kpc - position.y / kpc) * (posNode.y / kpc - position.y / kpc) + (posNode.z / kpc - position.z / kpc) * (posNode.z / kpc - position.z / kpc));
             
             if (d<dMin) {
                 dMin = d;

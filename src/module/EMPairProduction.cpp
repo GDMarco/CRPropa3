@@ -33,7 +33,7 @@ void EMPairProduction::setPhotonField(ref_ptr<PhotonField> photonField) {
     
     if (!this->photonField->hasPositionDependence()){
         
-        this->interactionRates = new InteractionRatesIsotropic();
+        this->interactionRates = new InteractionRatesIsotropic("interactionRatesIsotropic", false);
         InteractionRatesIsotropic* intRatesIso = static_cast<InteractionRatesIsotropic*>(this->interactionRates.get()); //there's the dedicated function in CRPropa
         
         initRate(getDataPath("EMPairProduction/rate_" + fname + ".txt"), intRatesIso);
@@ -41,7 +41,7 @@ void EMPairProduction::setPhotonField(ref_ptr<PhotonField> photonField) {
         
     } else {
         
-        this->interactionRates = new InteractionRatesPositionDependent();
+        this->interactionRates = new InteractionRatesPositionDependent("interactionRatesPositionDependent", true);
         InteractionRatesPositionDependent* intRatesPosDep = static_cast<InteractionRatesPositionDependent*>(this->interactionRates.get());
         
         initRatePositionDependentPhotonField(getDataPath("EMPairProduction/"+fname+"/Rate/"), intRatesPosDep);
@@ -84,17 +84,15 @@ void EMPairProduction::initRate(std::string filename, InteractionRatesIsotropic*
 	}
 	infile.close();
 
-    intRatesIso->setabEnergy(tabEnergy);
-    intRatesIso->setabRate(tabRate);
-    
+    intRatesIso->setTabulatedEnergy(tabEnergy);
+    intRatesIso->setTabulatedRate(tabRate);
 }
-
 
 std::string EMPairProduction::splitFilename(const std::string str) {
             std::size_t found = str.find_last_of("/\\");
             std::string s = str.substr(found+1);
             return s;
-    }
+}
                                                        
 void EMPairProduction::initRatePositionDependentPhotonField(std::string filepath, InteractionRatesPositionDependent* intRatesPosDep) {
     
@@ -163,10 +161,9 @@ void EMPairProduction::initRatePositionDependentPhotonField(std::string filepath
         infile.close();
     }
     
-    intRatesPosDep->setabEnergy(tabEnergy);
-    intRatesPosDep->setabRate(tabRate);
-    intRatesPosDep->setphotonDict(photonDict);
-    
+    intRatesPosDep->setTabulatedEnergy(tabEnergy);
+    intRatesPosDep->setTabulatedRate(tabRate);
+    intRatesPosDep->setPhotonDict(photonDict);
 }
 
 void EMPairProduction::initCumulativeRate(std::string filename, InteractionRatesIsotropic* intRatesIso) {
@@ -206,9 +203,10 @@ void EMPairProduction::initCumulativeRate(std::string filename, InteractionRates
 		tabCDF.push_back(cdf);
 	}
 	infile.close();
-    intRatesIso->setabE(tabE);
-    intRatesIso->setabs(tabs);
-    intRatesIso->setabCDF(tabCDF);
+    
+    intRatesIso->setTabulatedE(tabE);
+    intRatesIso->setTabulateds(tabs);
+    intRatesIso->setTabulatedCDF(tabCDF);
 }
 
 void EMPairProduction::initCumulativeRatePositionDependentPhotonField(std::string filepath, InteractionRatesPositionDependent* intRatesPosDep) {
@@ -265,11 +263,11 @@ void EMPairProduction::initCumulativeRatePositionDependentPhotonField(std::strin
         tabCDF.push_back(vecCDF);
         infile.close();
     }
-    intRatesPosDep->setabE(tabE);
-    intRatesPosDep->setabs(tabs);
-    intRatesPosDep->setabCDF(tabCDF);
+    
+    intRatesPosDep->setTabulatedE(tabE);
+    intRatesPosDep->setTabulateds(tabs);
+    intRatesPosDep->setTabulatedCDF(tabCDF);
 }
-
                                                        
 // Hold an data array to interpolate the energy distribution on
 class PPSecondariesEnergyDistribution {
@@ -347,18 +345,18 @@ void EMPairProduction::getPerformInteractionTabs(const Vector3d &position, std::
         
         InteractionRatesIsotropic* intRateIso = static_cast<InteractionRatesIsotropic*>(this->interactionRates.get());
         
-        tabE = intRateIso->getabE();
-        tabs = intRateIso->getabs();
-        tabCDF = intRateIso->getabCDF();
+        tabE = intRateIso->getTabulatedE();
+        tabs = intRateIso->getTabulateds();
+        tabCDF = intRateIso->getTabulatedCDF();
         
     } else {
         
         InteractionRatesPositionDependent* intRatePosDep = static_cast<InteractionRatesPositionDependent*>(this->interactionRates.get());
         
-        std::vector<std::vector<double>> E = intRatePosDep->getabE();
-        std::vector<std::vector<double>> s = intRatePosDep->getabs();
-        std::vector<std::vector<std::vector<double>>> CDF = intRatePosDep->getabCDF();
-        std::unordered_map<int,Vector3d> photonDict = intRatePosDep->getphotonDict();
+        std::vector<std::vector<double>> E = intRatePosDep->getTabulatedE();
+        std::vector<std::vector<double>> s = intRatePosDep->getTabulateds();
+        std::vector<std::vector<std::vector<double>>> CDF = intRatePosDep->getTabulatedCDF();
+        std::unordered_map<int,Vector3d> photonDict = intRatePosDep->getPhotonDict();
         
         double dMin = 1000. * kpc;
         int iMin = -1;
@@ -367,7 +365,7 @@ void EMPairProduction::getPerformInteractionTabs(const Vector3d &position, std::
             
             Vector3d posNode = el.second;
             double d;
-            d = sqrt((-posNode.x/kpc -position.x/kpc)*(-posNode.x/kpc-position.x/kpc)+(posNode.y/kpc-position.y/kpc)*(posNode.y/kpc-position.y/kpc)+(posNode.z/kpc-position.z/kpc)*(posNode.z/kpc-position.z/kpc));
+            d = sqrt((- posNode.x / kpc - position.x / kpc) * (- posNode.x / kpc - position.x / kpc) + (posNode.y / kpc - position.y / kpc) * (posNode.y / kpc - position.y / kpc) + (posNode.z / kpc - position.z / kpc) * (posNode.z / kpc - position.z / kpc));
             
             if (d<dMin) {
                 dMin = d;
@@ -386,16 +384,16 @@ void EMPairProduction::getProcessTabs(const Vector3d &position, std::vector<doub
         
         InteractionRatesIsotropic* intRateIso = static_cast<InteractionRatesIsotropic*>(this->interactionRates.get());
         
-        tabEnergy = intRateIso->getabEnergy();
-        tabRate = intRateIso->getabRate();
+        tabEnergy = intRateIso->getTabulatedEnergy();
+        tabRate = intRateIso->getTabulatedRate();
         
     } else {
         
         InteractionRatesPositionDependent* intRatePosDep = static_cast<InteractionRatesPositionDependent*>(this->interactionRates.get());
         
-        std::vector<std::vector<double>> Energy = intRatePosDep->getabEnergy();
-        std::vector<std::vector<double>> Rate = intRatePosDep->getabRate();
-        std::unordered_map<int,Vector3d> photonDict = intRatePosDep->getphotonDict();
+        std::vector<std::vector<double>> Energy = intRatePosDep->getTabulatedEnergy();
+        std::vector<std::vector<double>> Rate = intRatePosDep->getTabulatedRate();
+        std::unordered_map<int,Vector3d> photonDict = intRatePosDep->getPhotonDict();
         
         double dMin = 1000. * kpc;
         int iMin = -1;
@@ -404,7 +402,7 @@ void EMPairProduction::getProcessTabs(const Vector3d &position, std::vector<doub
             
             Vector3d posNode = el.second;
             double d;
-            d = sqrt((-posNode.x/kpc -position.x/kpc)*(-posNode.x/kpc-position.x/kpc)+(posNode.y/kpc-position.y/kpc)*(posNode.y/kpc-position.y/kpc)+(posNode.z/kpc-position.z/kpc)*(posNode.z/kpc-position.z/kpc));
+            d = sqrt((- posNode.x / kpc - position.x / kpc) * (- posNode.x / kpc - position.x / kpc) + (posNode.y / kpc - position.y / kpc) * (posNode.y / kpc - position.y / kpc) + (posNode.z / kpc - position.z / kpc) * (posNode.z / kpc - position.z / kpc));
             
             if (d<dMin) {
                 dMin = d;

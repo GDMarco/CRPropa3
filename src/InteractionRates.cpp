@@ -8,7 +8,7 @@
 
 namespace crpropa {
 
-InteractionRatesIsotropic::InteractionRatesIsotropic(std::string ratesName, bool isPositionDependent) : InteractionRates("interactionRatesIsotropic", false) {
+InteractionRatesIsotropic::InteractionRatesIsotropic(std::string ratesName, bool isPositionDependent) : InteractionRates() {
   this->ratesName = ratesName;
   this->isPositionDependent = isPositionDependent;
 }
@@ -47,7 +47,7 @@ void InteractionRatesIsotropic::setTabulatedCDF (std::vector<std::vector<double>
     tabCDF = tabCDF;
 }
 
-InteractionRatesPositionDependent::InteractionRatesPositionDependent(std::string ratesName, bool isPositionDependent) : InteractionRates("interactionRatespositionDependent", true) {
+InteractionRatesPositionDependent::InteractionRatesPositionDependent(std::string ratesName, bool isPositionDependent) : InteractionRates() {
   this->ratesName = ratesName;
   this->isPositionDependent = isPositionDependent;
 }

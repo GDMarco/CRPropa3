@@ -43,10 +43,10 @@ public:
 	 @param thinning		weighted sampling of secondaries (0: all particles are tracked; 1: maximum thinning)
 	 @param limit			step size limit as fraction of mean free path
 	 */
-	EMPairProduction(ref_ptr<PhotonField> photonField, bool haveElectrons = false, double thinning = 0, double limit = 0.1); //, ref_ptr<InteractionRates> interactionRates
+	EMPairProduction(ref_ptr<PhotonField> photonField, bool haveElectrons = false, double thinning = 0, double limit = 0.1);
 
 	// set the target photon field
-	void setPhotonField(ref_ptr<PhotonField> photonField); //, ref_ptr<InteractionRates> interactionRates
+	void setPhotonField(ref_ptr<PhotonField> photonField);
 
 	// decide if secondary electrons are added to the simulation
 	void setHaveElectrons(bool haveElectrons);
@@ -80,7 +80,6 @@ public:
 	void process(Candidate *candidate) const;
 
 protected:
-    
     std::string splitFilename (const std::string str);
     
 };
