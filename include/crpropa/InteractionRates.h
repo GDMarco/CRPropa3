@@ -17,13 +17,30 @@ namespace crpropa {
 
 /**
  @class Interaction Rates
- @brief Abstract base class for photon fields.
+ @brief Abstract base class for photon fields interaction rates.
  */
 class InteractionRates: public Referenced {
 public:
     InteractionRates() {
+      this->ratesName = "AbstractIntercationRates";
+      this->isPositionDependent = false;
 }
-    
+
+std::string getFieldName() const {
+		return this->fieldName;
+	}
+  bool hasPositionDependence const {
+    return this->isPositionDepedent;
+  }
+  void setRatesName(std::string ratesName) {
+    this->ratesName = ratesName; 
+  }
+
+protected: 
+
+  std::string ratesName;
+  bool isPositionDependent; 
+
 };
 
 /**
@@ -32,20 +49,19 @@ public:
  */
 class InteractionRatesIsotropic: public InteractionRates {
 public:
+    InteractionRatesIsotropic(const std::string ratesName, const bool isPositionDependent = true);
     
-    InteractionRatesIsotropic();
+    std::vector<double> getTabulatedEnergy();
+    std::vector<double> getTabulatedRate();
+    std::vector<double> getTabulatedE();
+    std::vector<double> getTabulateds();
+    std::vector<std::vector<double>> getTabulatedCDF();
     
-    std::vector<double> getabEnergy();
-    std::vector<double> getabRate();
-    std::vector<double> getabE();
-    std::vector<double> getabs();
-    std::vector<std::vector<double>> getabCDF();
-    
-    void setabEnergy (std::vector<double>& newtabEnergy);
-    void setabRate (std::vector<double>& newtabRate);
-    void setabE (std::vector<double>& newtabE);
-    void setabs (std::vector<double>& newtabs);
-    void setabCDF (std::vector<std::vector<double>>& newtabCDF);
+    void setTabulatedEnergy (std::vector<double>& tabEnergy);
+    void setTabulatedRate (std::vector<double>& tabRate);
+    void setTabulatedE (std::vector<double>& tabE);
+    void setTabulateds (std::vector<double>& tabs);
+    void setTabulatedCDF (std::vector<std::vector<double>>& tabCDF);
     
 protected:
     
@@ -62,35 +78,34 @@ protected:
 
 class InteractionRatesPositionDependent: public InteractionRates {
 public:
+    InteractionRatesPositionDependent(const std::string ratesName, const bool isPositionDependent = true);
     
-    InteractionRatesPositionDependent();
+    std::vector<std::vector<double>> getTabulatedEnergy();
+    std::vector<std::vector<double>> getTabulatedRate();
+    std::vector<std::vector<double>> getTabulatedE();
+    std::vector<std::vector<double>> getTabulateds();
+    std::vector<std::vector<std::vector<double>>> getTabulatedCDF();
+    std::unordered_map<int, Vector3d> getPhotonDict();
     
-    std::vector<std::vector<double>> getabEnergy();
-    std::vector<std::vector<double>> getabRate();
-    std::vector<std::vector<double>> getabE();
-    std::vector<std::vector<double>> getabs();
-    std::vector<std::vector<std::vector<double>>> getabCDF();
-    std::unordered_map<int, Vector3d> getphotonDict();
-    
-    void setabEnergy (std::vector<std::vector<double>>& newtabEnergy);
-    void setabRate (std::vector<std::vector<double>>& newtabRate);
-    void setabE (std::vector<std::vector<double>>& newtabE);
-    void setabs (std::vector<std::vector<double>>& newtabs);
-    void setabCDF (std::vector<std::vector<std::vector<double>>>& newtabCDF);
-    void setphotonDict (std::unordered_map<int, Vector3d>& newphotonDict);
+    void setTabulatedEnergy (std::vector<std::vector<double>>& tabEnergy);
+    void setTabulatedRate (std::vector<std::vector<double>>& tabRate);
+    void setTabulatedE (std::vector<std::vector<double>>& tabE);
+    void setTabulateds (std::vector<std::vector<double>>& tabs);
+    void setTabulatedCDF (std::vector<std::vector<std::vector<double>>>& tabCDF);
+    void setPhotonDict (std::unordered_map<int, Vector3d>& photonDict); 
 
 
 protected:
     
     // tabulated interaction rates 1/lambda(E)
-    std::vector<std::vector<double>> tabEnergy;
-    std::vector<std::vector<double>> tabRate;
+    std::vector<std::vector<double>> tabEnergy; //!< electron energy in [J]
+    std::vector<std::vector<double>> tabRate; //!< interaction rate in [1/m]
     
     // tabulated CDF(s_kin, E) = cumulative differential interaction rate
-    std::vector<std::vector<double>> tabE;
-    std::vector<std::vector<double>> tabs;
-    std::vector<std::vector<std::vector<double>>> tabCDF;
-    std::unordered_map<int, Vector3d> photonDict;
+    std::vector<std::vector<double>> tabE; //!< electron energy in [J]
+    std::vector<std::vector<double>> tabs; //!< s_kin = s - m^2 in [J**2]
+    std::vector<std::vector<std::vector<double>>> tabCDF; //!< cumulative interaction rate
+    std::unordered_map<int, Vector3d> photonDict; //!< dictionary to link tables to spatial coordinates
 };
 
 } // namespace crpropa
