@@ -22,11 +22,11 @@ namespace crpropa {
 class InteractionRates: public Referenced {
 public:
     InteractionRates() {
-      this->ratesName = "AbstractIntercationRates";
+      this->ratesName = "AbstractInteractionRates";
       this->isPositionDependent = false;
 }
 
-std::string getFieldName() const {
+std::string getRatesName() const {
 		return this->fieldName;
 	}
   bool hasPositionDependence const {
