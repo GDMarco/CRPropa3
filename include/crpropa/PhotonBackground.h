@@ -25,7 +25,7 @@ public:
 		this->fieldName = "AbstractPhotonField";
 		this->isRedshiftDependent = false;
     this->isPositionDependent = false;
-	}
+  }
 
 	/**
 	 returns comoving photon density [1/m^3].
@@ -53,9 +53,9 @@ public:
 		return this->isRedshiftDependent;
 	}
     
-    bool hasPositionDependence() const {
-        return this->isPositionDependent; 
-    }
+  bool hasPositionDependence() const {
+      return this->isPositionDependent;     
+  }
 
 	void setFieldName(std::string fieldName) {
 		this->fieldName = fieldName;
