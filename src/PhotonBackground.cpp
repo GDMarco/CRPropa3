@@ -22,8 +22,7 @@ TabularPhotonField::TabularPhotonField(std::string fieldName, bool isRedshiftDep
   this->isPositionDependent = isPositionDependent;
 
     if (this->isPositionDependent) {
-        KISS_LOG_WARNING << "Photon Field " << fieldName << " is position dependent! It is not the correct class. \n";
-        exit(1); // to check! 
+        throw std::runtime_error("Photon Field " + fieldName + " is position dependent! It is not the correct class. \n");
     } else {
         readPhotonEnergy(getDataPath("") + "Scaling/" + this->fieldName + "_photonEnergy.txt");
         readPhotonDensity(getDataPath("") + "Scaling/" + this->fieldName + "_photonDensity.txt");
@@ -187,13 +186,11 @@ TabularSpatialPhotonField::TabularSpatialPhotonField(std::string fieldName, bool
     
     if (this->isRedshiftDependent) {
         
-        KISS_LOG_WARNING << "Photon Field " << fieldName << " is redshift dependent! It is not the correct class. \n";
-        exit(1); // to check
+        throw std::runtime_error("Photon Field " + fieldName + " is redshift dependent! It is not the correct class. \n");
         
     } else if (!this->isPositionDependent) { 
         
-        KISS_LOG_WARNING << "Photon Field " << fieldName << " is not position dependent! It is not the correct class. \n";
-        exit(1); // to check
+        throw std::runtime_error("Photon Field " + fieldName + " is not position dependent! It is not the correct class. \n");
         
     } else {
         
@@ -201,14 +198,14 @@ TabularSpatialPhotonField::TabularSpatialPhotonField(std::string fieldName, bool
         std::unordered_map<int, Vector3d> photonDict;
         int iFile = 0;
         
-        //for cycle for all the files in the path: build Dictionary + build this->photonEnergy
+        //for cycle for the files in the photon field path: build photonDict, fill this->photonEnergy and this->photonDensity
         for (auto const& dir_entry : std::__fs::filesystem::directory_iterator{dirE}) {
             
             double x, y, z;
             std::string str;
             std::stringstream ss;
             
-            //Taking the filename
+            
             std::string filename = splitFilename(dir_entry.path().string());
             ss << filename;
             
@@ -270,7 +267,7 @@ double TabularSpatialPhotonField::getPhotonDensity(const double ePhoton, double 
         
         Vector3d posNode = el.second;
         double d;
-        d = sqrt((-posNode.x/kpc -pos.x/kpc)*(-posNode.x/kpc-pos.x/kpc)+(posNode.y/kpc-pos.y/kpc)*(posNode.y/kpc-pos.y/kpc)+(posNode.z/kpc-pos.z/kpc)*(posNode.z/kpc-pos.z/kpc));
+        d = sqrt((- posNode.x / kpc  - pos.x / kpc) * (- posNode.x / kpc - pos.x / kpc) + (posNode.y / kpc - pos.y / kpc) * (posNode.y / kpc - pos.y / kpc ) + (posNode.z / kpc - pos.z / kpc) * (posNode.z / kpc - pos.z / kpc));
         
         if (d<dMin) {
             dMin = d;
@@ -301,7 +298,7 @@ double TabularSpatialPhotonField::getMinimumPhotonEnergy(double z, const Vector3
         
         Vector3d posNode = el.second;
         double d;
-        d = sqrt((-posNode.x/kpc -pos.x/kpc)*(-posNode.x/kpc-pos.x/kpc)+(posNode.y/kpc-pos.y/kpc)*(posNode.y/kpc-pos.y/kpc)+(posNode.z/kpc-pos.z/kpc)*(posNode.z/kpc-pos.z/kpc));
+        d = sqrt((- posNode.x / kpc  - pos.x / kpc) * (- posNode.x / kpc - pos.x / kpc) + (posNode.y / kpc - pos.y / kpc) * (posNode.y / kpc - pos.y / kpc ) + (posNode.z / kpc - pos.z / kpc) * (posNode.z / kpc - pos.z / kpc));
         
         if (d<dMin) {
             dMin = d;
@@ -320,7 +317,7 @@ double TabularSpatialPhotonField::getMaximumPhotonEnergy(double z, const Vector3
         
         Vector3d posNode = el.second;
         double d;
-        d = sqrt((-posNode.x/kpc -pos.x/kpc)*(-posNode.x/kpc-pos.x/kpc)+(posNode.y/kpc-pos.y/kpc)*(posNode.y/kpc-pos.y/kpc)+(posNode.z/kpc-pos.z/kpc)*(posNode.z/kpc-pos.z/kpc));
+        d = sqrt((- posNode.x / kpc  - pos.x / kpc) * (- posNode.x / kpc - pos.x / kpc) + (posNode.y / kpc - pos.y / kpc) * (posNode.y / kpc - pos.y / kpc ) + (posNode.z / kpc - pos.z / kpc) * (posNode.z / kpc - pos.z / kpc));
         
         if (d<dMin) {
             dMin = d;
