@@ -53,9 +53,9 @@ public:
 		return this->isRedshiftDependent;
 	}
     
-    bool hasPositionDependence() const {
-        return this->isPositionDependent; 
-    }
+  bool hasPositionDependence() const {
+      return this->isPositionDependent;     
+  }
 
 	void setFieldName(std::string fieldName) {
 		this->fieldName = fieldName;
