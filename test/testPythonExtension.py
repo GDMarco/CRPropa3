@@ -156,6 +156,7 @@ class testCrossLanguagePolymorphism(unittest.TestCase):
                 self.density = density
                 self.fieldName = 'testCustomPhotonField'
                 self.isRedshiftDependent = True
+                self.isPositionDependent = True
                 
             def getPhotonDensity(self, energy, z):
                 return self.density
@@ -166,6 +167,9 @@ class testCrossLanguagePolymorphism(unittest.TestCase):
             def hasRedshiftDependence(self):
                 return self.isRedshiftDependent
 
+            def hasPositionDependence(self):
+                return self.isPositionDependent
+
         photonDensity = 10
         photonField = CustomPhotonField(photonDensity)
         energy = 10*crp.GeV
@@ -173,8 +177,8 @@ class testCrossLanguagePolymorphism(unittest.TestCase):
         self.assertEqual(photonDensity, photonField.getPhotonDensity(energy, z))
         self.assertEqual('testCustomPhotonField', photonField.getFieldName())
         self.assertEqual(True, photonField.hasRedshiftDependence())
-
-
+        self.assertEqual(True, photonField.hasPositionDependence())
+        
     def testCustomPhotonField(self):
         class CustomPhotonField(crp.PhotonField):
             def __init__(self, val):
