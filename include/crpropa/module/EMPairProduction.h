@@ -34,7 +34,7 @@ private:
 	double limit;						// limit the step to a fraction of the mean free path
 	double thinning;					// factor of the thinning (0: no thinning, 1: maximum thinning)
 	std::string interactionTag = "EMPP";
-    ref_ptr<InteractionRates> interactionRates;
+  ref_ptr<InteractionRates> interactionRates;
     
 public:
 	/** Constructor
