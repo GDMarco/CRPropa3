@@ -67,14 +67,14 @@ public:
 	void setInteractionTag(std::string tag);
 	std::string getInteractionTag() const;
 
-    void initRate(std::string filename, InteractionRatesIsotropic* intRatesIso);
-    void initCumulativeRate(std::string filename, InteractionRatesIsotropic* intRatesIso);
+  void initRate(std::string filename, InteractionRatesIsotropic* intRatesIso);
+  void initCumulativeRate(std::string filename, InteractionRatesIsotropic* intRatesIso);
     
-    void initRatePositionDependentPhotonField(std::string filepath, InteractionRatesPositionDependent* intRatesPosDep);
-    void initCumulativeRatePositionDependentPhotonField(std::string filepath, InteractionRatesPositionDependent* intRatesPosDep);
+  void initRatePositionDependentPhotonField(std::string filepath, InteractionRatesPositionDependent* intRatesPosDep);
+  void initCumulativeRatePositionDependentPhotonField(std::string filepath, InteractionRatesPositionDependent* intRatesPosDep);
 
-    void getPerformInteractionTabs(const Vector3d &position, std::vector<double> &tabE, std::vector<double> &tabs, std::vector<std::vector<double>> &tabCDF) const;
-    void getProcessTabs(const Vector3d &position, std::vector<double> &tabEnergy, std::vector<double> &tabRate) const;
+  void getPerformInteractionTabs(const Vector3d &position, std::vector<double> &tabE, std::vector<double> &tabs, std::vector<std::vector<double>> &tabCDF) const;
+  void getProcessTabs(const Vector3d &position, std::vector<double> &tabEnergy, std::vector<double> &tabRate) const;
     
 	void performInteraction(Candidate *candidate) const;
 	void process(Candidate *candidate) const;
