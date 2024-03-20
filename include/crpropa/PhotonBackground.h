@@ -24,7 +24,7 @@ public:
 	PhotonField() {
 		this->fieldName = "AbstractPhotonField";
 		this->isRedshiftDependent = false;
-        this->isPositionDependent = false;
+    this->isPositionDependent = false;
 	}
 
 	/**
