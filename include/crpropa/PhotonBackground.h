@@ -64,7 +64,7 @@ public:
 protected:
 	std::string fieldName;
 	bool isRedshiftDependent;
-    bool isPositionDependent;
+  bool isPositionDependent;
 };
 
 /**
