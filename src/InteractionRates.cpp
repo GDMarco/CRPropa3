@@ -32,19 +32,19 @@ std::vector<std::vector<double>> InteractionRatesIsotropic::getTabulatedCDF() {
 }
 
 void InteractionRatesIsotropic::setTabulatedEnergy (std::vector<double>& tabEnergy) {
-    tabEnergy = tabEnergy;
+    this->tabEnergy = tabEnergy;
 }
 void InteractionRatesIsotropic::setTabulatedRate (std::vector<double>& tabRate) {
-    tabRate = tabRate;
+    this->tabRate = tabRate;
 }
 void InteractionRatesIsotropic::setTabulatedE (std::vector<double>& tabE) {
-    tabE = tabE;
+    this->tabE = tabE;
 }
 void InteractionRatesIsotropic::setTabulateds (std::vector<double>& tabs) {
-    tabs = tabs;
+    this->tabs = tabs;
 }
 void InteractionRatesIsotropic::setTabulatedCDF (std::vector<std::vector<double>>& tabCDF) {
-    tabCDF = tabCDF;
+    this->tabCDF = tabCDF;
 }
 
 InteractionRatesPositionDependent::InteractionRatesPositionDependent(std::string ratesName, bool isPositionDependent) : InteractionRates() {
@@ -72,22 +72,22 @@ std::unordered_map<int, Vector3d> InteractionRatesPositionDependent::getPhotonDi
 }
 
 void InteractionRatesPositionDependent::setTabulatedEnergy (std::vector<std::vector<double>>& tabEnergy) {
-    tabEnergy = tabEnergy;
+    this->tabEnergy = tabEnergy;
 }
 void InteractionRatesPositionDependent::setTabulatedRate (std::vector<std::vector<double>>& tabRate) {
-    tabRate = tabRate;
+    this->tabRate = tabRate;
 }
 void InteractionRatesPositionDependent::setTabulatedE (std::vector<std::vector<double>>& tabE) {
-    tabE = tabE;
+    this->tabE = tabE;
 }
 void InteractionRatesPositionDependent::setTabulateds (std::vector<std::vector<double>>& tabs) {
-    tabs = tabs;
+    this->tabs = tabs;
 }
 void InteractionRatesPositionDependent::setTabulatedCDF (std::vector<std::vector<std::vector<double>>>& tabCDF) {
-    tabCDF = tabCDF;
+    this->tabCDF = tabCDF;
 }
 void InteractionRatesPositionDependent::setPhotonDict (std::unordered_map<int, Vector3d>& photonDict) {
-    photonDict = photonDict;
+    this->photonDict = photonDict;
 }
 
 } //namespace crpropa
