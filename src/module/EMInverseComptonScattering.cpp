@@ -34,7 +34,7 @@ void EMInverseComptonScattering::setPhotonField(ref_ptr<PhotonField> photonField
     if (!this->photonField->hasPositionDependence()) {
         
         this->interactionRates = new InteractionRatesIsotropic("interactionRatesIsotropic", false);
-        InteractionRatesIsotropic* intRatesIso = static_cast<InteractionRatesIsotropic*>(this->interactionRates.get()); //there's the dedicated function in CRPropa
+        InteractionRatesIsotropic* intRatesIso = static_cast<InteractionRatesIsotropic*>(this->interactionRates.get()); 
         
         initRate(getDataPath("EMInverseComptonScattering/rate_" + fname + ".txt"), intRatesIso);
         initCumulativeRate(getDataPath("EMInverseComptonScattering/cdf_" + fname + ".txt"), intRatesIso);
