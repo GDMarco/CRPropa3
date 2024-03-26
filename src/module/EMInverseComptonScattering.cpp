@@ -365,7 +365,7 @@ void EMInverseComptonScattering::getPerformInteractionTabs(const Vector3d &posit
             double d;
             d = sqrt((- posNode.x / kpc - position.x / kpc) * (- posNode.x / kpc - position.x / kpc) + (posNode.y / kpc - position.y / kpc) * (posNode.y / kpc - position.y / kpc) + (posNode.z / kpc - position.z / kpc) * (posNode.z / kpc - position.z / kpc));
             
-            if (d<dMin) {
+            if (d < dMin) {
                 dMin = d;
                 iMin = el.first;
             }
@@ -402,7 +402,7 @@ void EMInverseComptonScattering::getProcessTabs(const Vector3d &position, std::v
             double d;
             d = sqrt((- posNode.x / kpc - position.x / kpc) * (- posNode.x / kpc - position.x / kpc) + (posNode.y / kpc - position.y / kpc) * (posNode.y / kpc - position.y / kpc) + (posNode.z / kpc - position.z / kpc) * (posNode.z / kpc - position.z / kpc));
             
-            if (d<dMin) {
+            if (d < dMin) {
                 dMin = d;
                 iMin = el.first;
             }
