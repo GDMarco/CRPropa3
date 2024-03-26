@@ -96,7 +96,6 @@ public:
     void setTabulatedCDF (std::vector<std::vector<std::vector<double>>>& tabCDF);
     void setPhotonDict (std::unordered_map<int, Vector3d>& photonDict); 
 
-
 protected:
     
     // tabulated interaction rates 1/lambda(E)

@@ -41,11 +41,23 @@ void EMPairProduction::setPhotonField(ref_ptr<PhotonField> photonField) {
         
     } else {
         
+        std::cout << "entering in spatial dep EMPP" << std::endl;
+        
         this->interactionRates = new InteractionRatesPositionDependent("interactionRatesPositionDependent", true);
+        
+        std::cout << "allocating the pointer" << std::endl;
+        
         InteractionRatesPositionDependent* intRatesPosDep = static_cast<InteractionRatesPositionDependent*>(this->interactionRates.get());
         
+        std::cout << "casting the pointer" << std::endl;
+        
         initRatePositionDependentPhotonField(getDataPath("EMPairProduction/"+fname+"/Rate/"), intRatesPosDep);
+        
+        std::cout << "init the rate" << std::endl;
+        
         initCumulativeRatePositionDependentPhotonField(getDataPath("EMPairProduction/"+fname+"/CumulativeRate/"), intRatesPosDep);
+        
+        std::cout << "init the cumulative rate" << std::endl;
         
     }
 }
@@ -340,7 +352,7 @@ class PPSecondariesEnergyDistribution {
 		}
 };
 
-void EMPairProduction::getPerformInteractionTabs(const Vector3d &position, std::vector<double> &tabE, std::vector<double> &tabs, std::vector<std::vector<double>> &tabCDF) const {
+void EMPairProduction::getPerformInteractionTabs(const Vector3d &position, std::vector<double>& tabE, std::vector<double>& tabs, std::vector<std::vector<double>>& tabCDF) const {
     if (!this->photonField->hasPositionDependence()){
         
         InteractionRatesIsotropic* intRateIso = static_cast<InteractionRatesIsotropic*>(this->interactionRates.get());
@@ -379,36 +391,67 @@ void EMPairProduction::getPerformInteractionTabs(const Vector3d &position, std::
     }
 }
 
-void EMPairProduction::getProcessTabs(const Vector3d &position, std::vector<double> &tabEnergy, std::vector<double> &tabRate) const {
+void EMPairProduction::getProcessTabs(const Vector3d &position, std::vector<double>& tabEnergy, std::vector<double>& tabRate) const {
     if (!this->photonField->hasPositionDependence()) {
+        
+        std::cout << "entering in the get process tab iso" << std::endl;
         
         InteractionRatesIsotropic* intRateIso = static_cast<InteractionRatesIsotropic*>(this->interactionRates.get());
         
+        std::cout << "casting iso" << std::endl;
+        
         tabEnergy = intRateIso->getTabulatedEnergy();
         tabRate = intRateIso->getTabulatedRate();
-        
+        std::cout << "tabEnergy0 : " << tabEnergy[0] << std::endl;
+        std::cout << "assign tab iso" << std::endl;
     } else {
         
+        std::cout << "entering in the get process tab" << std::endl;
+        
         InteractionRatesPositionDependent* intRatePosDep = static_cast<InteractionRatesPositionDependent*>(this->interactionRates.get());
+        
+        std::cout << "casting the pointer" << std::endl;
         
         std::vector<std::vector<double>> Energy = intRatePosDep->getTabulatedEnergy();
         std::vector<std::vector<double>> Rate = intRatePosDep->getTabulatedRate();
         std::unordered_map<int,Vector3d> photonDict = intRatePosDep->getPhotonDict();
         
+        std::cout << "got the tabulated energy: " << std::endl;
+        std::cout << "got the tabulated Rate: " << std::endl;
+        std::cout << "got the tabulated dict: " << std::endl;
+        
+        for (const auto& pair : photonDict) {
+            std::cout << "row: " << pair.first << ", Vector: " << pair.second << std::endl;
+        }
+        
+        //it does not recog the for cycles for the unordered map, try to compile with C++17
+        
         double dMin = 1000. * kpc;
+        
+        std::cout << "dMin: " << std::endl;
+        
         int iMin = -1;
         
         for (const auto& el : photonDict) {
             
+            std::cout << "in the for cycle" << std::endl;
+            
             Vector3d posNode = el.second;
+            
+            std::cout << "PosNode: " << std::endl;
+            
             double d;
             d = sqrt((- posNode.x / kpc - position.x / kpc) * (- posNode.x / kpc - position.x / kpc) + (posNode.y / kpc - position.y / kpc) * (posNode.y / kpc - position.y / kpc) + (posNode.z / kpc - position.z / kpc) * (posNode.z / kpc - position.z / kpc));
             
-            if (d<dMin) {
+            std::cout << "Computing the distance" << d / kpc << std::endl;
+            
+            if (d < dMin) {
                 dMin = d;
                 iMin = el.first;
             }
         }
+        
+        std::cout << "out of the for: " << std::endl;
         
         tabEnergy = Energy[iMin];
         tabRate = Rate[iMin];
@@ -474,29 +517,46 @@ void EMPairProduction::performInteraction(Candidate *candidate) const {
 
 void EMPairProduction::process(Candidate *candidate) const {
     
+    std::cout << "entering process" << std::endl;
+    
     // check if photon
     if (candidate->current.getId() != 22)
         return;
-        
+
+    std::cout << "check the candidate is 22" << std::endl;
+
     // scale particle energy instead of background photon energy
     double z = candidate->getRedshift();
     double E = candidate->current.getEnergy() * (1 + z);
     Vector3d position = candidate->current.getPosition();
 
+    std::cout << "check the candidate position and energy" << std::endl;
+    
     std::vector<double> tabEnergy;
     std::vector<double> tabRate;
     
+    std::cout << "define the tabs" << std::endl;
+    
     getProcessTabs(position, tabEnergy, tabRate);
+
+    std::cout << "get the process tabs" << std::endl;
+    std::cout << "tabEnergy0 : " << tabEnergy[0] << std::endl;
     
     // check if in tabulated energy range
     if ((E < tabEnergy.front()) or (E > tabEnergy.back())) {
         return;
     }
-        
+    
+    std::cout << "check energies" << std::endl;
+    
     // interaction rate
     double rate = interpolate(E, tabEnergy, tabRate);
     
+    std::cout << "interpolate energy" << std::endl;
+    
     rate *= pow_integer<2>(1 + z) * photonField->getRedshiftScaling(z);
+    
+    std::cout << "get redshift scaling" << std::endl;
     
     // run this loop at least once to limit the step size
     double step = candidate->getCurrentStep();

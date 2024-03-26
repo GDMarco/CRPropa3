@@ -704,6 +704,8 @@ TEST(EMPairProduction, allBackgrounds) {
 	em.setPhotonField(ebl);
 	ref_ptr<PhotonField> urb = new URB_Protheroe96();
 	em.setPhotonField(urb);
+    ref_ptr<PhotonField> isrf = new ISRF_Freudenreich98();
+    em.setPhotonField(isrf);
 	ebl = new IRB_Stecker05();
 	em.setPhotonField(ebl);
 	ebl = new IRB_Franceschini08();
@@ -722,8 +724,6 @@ TEST(EMPairProduction, allBackgrounds) {
 	em.setPhotonField(urb);
 	urb = new URB_Nitu21();
 	em.setPhotonField(urb);
-  isrf = new ISRF_Freudenreich98();
-  em.setPhotonField(isrf);
 }
 
 TEST(EMPairProduction, limitNextStep) {
@@ -809,6 +809,8 @@ TEST(EMDoublePairProduction, allBackgrounds) {
 	em.setPhotonField(ebl);
 	ref_ptr<PhotonField> urb = new URB_Protheroe96();
 	em.setPhotonField(urb);
+    ref_ptr<PhotonField> isrf = new ISRF_Freudenreich98();
+    em.setPhotonField(isrf);
 	ebl = new IRB_Stecker05();
 	em.setPhotonField(ebl);
 	ebl = new IRB_Franceschini08();
@@ -827,8 +829,6 @@ TEST(EMDoublePairProduction, allBackgrounds) {
 	em.setPhotonField(urb);
 	urb = new URB_Nitu21();
 	em.setPhotonField(urb);
-  isrf = new ISRF_Freudenreich98();
-  em.setPhotonField(isrf);
 }
 
 TEST(EMDoublePairProduction, limitNextStep) {
@@ -915,6 +915,8 @@ TEST(EMTripletPairProduction, allBackgrounds) {
 	em.setPhotonField(ebl);
 	ref_ptr<PhotonField> urb = new URB_Protheroe96();
 	em.setPhotonField(urb);
+    ref_ptr<PhotonField> isrf = new ISRF_Freudenreich98();
+    em.setPhotonField(isrf);
 	ebl = new IRB_Stecker05();
 	em.setPhotonField(ebl);
 	ebl = new IRB_Franceschini08();
@@ -933,8 +935,6 @@ TEST(EMTripletPairProduction, allBackgrounds) {
 	em.setPhotonField(urb);
 	urb = new URB_Nitu21();
 	em.setPhotonField(urb);
-  isrf = new ISRF_Freudenreich98();
-  em.setPhotonField(isrf);
 }
 
 TEST(EMTripletPairProduction, limitNextStep) {
@@ -1022,6 +1022,8 @@ TEST(EMInverseComptonScattering, allBackgrounds) {
 	em.setPhotonField(ebl);
 	ref_ptr<PhotonField> urb = new URB_Protheroe96();
 	em.setPhotonField(urb);
+    ref_ptr<PhotonField> isrf = new ISRF_Freudenreich98();
+    em.setPhotonField(isrf);
 	ebl = new IRB_Stecker05();
 	em.setPhotonField(ebl);
 	ebl = new IRB_Franceschini08();
@@ -1040,8 +1042,6 @@ TEST(EMInverseComptonScattering, allBackgrounds) {
 	em.setPhotonField(urb);
 	urb = new URB_Nitu21();
 	em.setPhotonField(urb);
-  isrf = new ISRF_Freudenreich98();
-  em.setPhotonField(isrf);
 }
 
 TEST(EMInverseComptonScattering, limitNextStep) {
