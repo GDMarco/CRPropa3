@@ -185,7 +185,7 @@ void EMDoublePairProduction::getProcessTabs(const Vector3d &position, std::vecto
             double d;
             d = sqrt((- posNode.x / kpc - position.x / kpc) * (- posNode.x / kpc - position.x / kpc) + (posNode.y / kpc - position.y / kpc) * (posNode.y / kpc - position.y / kpc) + (posNode.z / kpc - position.z / kpc) * (posNode.z / kpc - position.z / kpc));
             
-            if (d<dMin) {
+            if (d < dMin) {
                 dMin = d;
                 iMin = el.first;
             }
