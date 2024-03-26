@@ -33,7 +33,7 @@ void EMPairProduction::setPhotonField(ref_ptr<PhotonField> photonField) {
     
     if (!this->photonField->hasPositionDependence()){
         
-        this->interactionRates = new InteractionRatesIsotropic("interactionRatesIsotropic", false)
+        this->interactionRates = new InteractionRatesIsotropic("interactionRatesIsotropic", false);
         InteractionRatesIsotropic* intRatesIso = static_cast<InteractionRatesIsotropic*>(this->interactionRates.get());
         
         initRate(getDataPath("EMPairProduction/rate_" + fname + ".txt"), intRatesIso);
@@ -41,7 +41,7 @@ void EMPairProduction::setPhotonField(ref_ptr<PhotonField> photonField) {
         
     } else {
         
-        this->interactionRates = new InteractionRatesPositionDependent("interactionRatesPositionDependent", true)
+        this->interactionRates = new InteractionRatesPositionDependent("interactionRatesPositionDependent", true);
         InteractionRatesPositionDependent* intRatesPosDep = static_cast<InteractionRatesPositionDependent*>(this->interactionRates.get());
         
         initRatePositionDependentPhotonField(getDataPath("EMPairProduction/"+fname+"/Rate/"), intRatesPosDep);
@@ -341,7 +341,7 @@ class PPSecondariesEnergyDistribution {
 		}
 };
 
-void EMPairProduction::getPerformInteractionTabs(const Vector3d &position, std::vector<double>& tabE, std::vector<double>& tabs, std::vector<std::vector<double>>& tabCDF) const {
+void EMPairProduction::getPerformInteractionTabs(const Vector3d &position, std::vector<double> &tabE, std::vector<double> &tabs, std::vector<std::vector<double>> &tabCDF) const {
     if (!this->photonField->hasPositionDependence()){
         
         InteractionRatesIsotropic* intRateIso = static_cast<InteractionRatesIsotropic*>(this->interactionRates.get());
@@ -380,7 +380,7 @@ void EMPairProduction::getPerformInteractionTabs(const Vector3d &position, std::
     }
 }
 
-void EMPairProduction::getProcessTabs(const Vector3d &position, std::vector<double>& tabEnergy, std::vector<double>& tabRate) const {
+void EMPairProduction::getProcessTabs(const Vector3d &position, std::vector<double> &tabEnergy, std::vector<double> &tabRate) const {
     if (!this->photonField->hasPositionDependence()) {
         
         InteractionRatesIsotropic* intRateIso = static_cast<InteractionRatesIsotropic*>(this->interactionRates.get());
