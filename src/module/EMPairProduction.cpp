@@ -33,7 +33,7 @@ void EMPairProduction::setPhotonField(ref_ptr<PhotonField> photonField) {
     
     if (!this->photonField->hasPositionDependence()){
         
-        this->interactionRates = new InteractionRatesIsotropic("interactionRatesIsotropic", false)
+        this->interactionRates = new InteractionRatesIsotropic("interactionRatesIsotropic", false);
         InteractionRatesIsotropic* intRatesIso = static_cast<InteractionRatesIsotropic*>(this->interactionRates.get());
         
         initRate(getDataPath("EMPairProduction/rate_" + fname + ".txt"), intRatesIso);
@@ -41,7 +41,7 @@ void EMPairProduction::setPhotonField(ref_ptr<PhotonField> photonField) {
         
     } else {
         
-        this->interactionRates = new InteractionRatesPositionDependent("interactionRatesPositionDependent", true)
+        this->interactionRates = new InteractionRatesPositionDependent("interactionRatesPositionDependent", true);
         InteractionRatesPositionDependent* intRatesPosDep = static_cast<InteractionRatesPositionDependent*>(this->interactionRates.get());
         
         initRatePositionDependentPhotonField(getDataPath("EMPairProduction/"+fname+"/Rate/"), intRatesPosDep);
