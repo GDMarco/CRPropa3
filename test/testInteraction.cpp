@@ -704,8 +704,13 @@ TEST(EMPairProduction, allBackgrounds) {
 	em.setPhotonField(ebl);
 	ref_ptr<PhotonField> urb = new URB_Protheroe96();
 	em.setPhotonField(urb);
+<<<<<<< HEAD
     ref_ptr<PhotonField> isrf = new ISRF_Freudenreich98();
     em.setPhotonField(isrf);
+=======
+  ref_ptr<PhotonField> isrf = new ISRF_Freudenreich98();
+  em.setPhotonField(isrf);
+>>>>>>> 214355f964044b0cf2357c13c15d004c7ef33a0d
 	ebl = new IRB_Stecker05();
 	em.setPhotonField(ebl);
 	ebl = new IRB_Franceschini08();
@@ -809,8 +814,13 @@ TEST(EMDoublePairProduction, allBackgrounds) {
 	em.setPhotonField(ebl);
 	ref_ptr<PhotonField> urb = new URB_Protheroe96();
 	em.setPhotonField(urb);
+<<<<<<< HEAD
     ref_ptr<PhotonField> isrf = new ISRF_Freudenreich98();
     em.setPhotonField(isrf);
+=======
+  ref_ptr<PhotonField> isrf = new ISRF_Freudenreich98();
+  em.setPhotonField(isrf);
+>>>>>>> 214355f964044b0cf2357c13c15d004c7ef33a0d
 	ebl = new IRB_Stecker05();
 	em.setPhotonField(ebl);
 	ebl = new IRB_Franceschini08();
@@ -915,8 +925,13 @@ TEST(EMTripletPairProduction, allBackgrounds) {
 	em.setPhotonField(ebl);
 	ref_ptr<PhotonField> urb = new URB_Protheroe96();
 	em.setPhotonField(urb);
+<<<<<<< HEAD
     ref_ptr<PhotonField> isrf = new ISRF_Freudenreich98();
     em.setPhotonField(isrf);
+=======
+  ref_ptr<PhotonField> isrf = new ISRF_Freudenreich98();
+  em.setPhotonField(isrf);
+>>>>>>> 214355f964044b0cf2357c13c15d004c7ef33a0d
 	ebl = new IRB_Stecker05();
 	em.setPhotonField(ebl);
 	ebl = new IRB_Franceschini08();
@@ -1022,8 +1037,13 @@ TEST(EMInverseComptonScattering, allBackgrounds) {
 	em.setPhotonField(ebl);
 	ref_ptr<PhotonField> urb = new URB_Protheroe96();
 	em.setPhotonField(urb);
+<<<<<<< HEAD
     ref_ptr<PhotonField> isrf = new ISRF_Freudenreich98();
     em.setPhotonField(isrf);
+=======
+  ref_ptr<PhotonField> isrf = new ISRF_Freudenreich98();
+  em.setPhotonField(isrf);
+>>>>>>> 214355f964044b0cf2357c13c15d004c7ef33a0d
 	ebl = new IRB_Stecker05();
 	em.setPhotonField(ebl);
 	ebl = new IRB_Franceschini08();
