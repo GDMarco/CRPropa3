@@ -65,8 +65,8 @@ void EMPairProduction::setThinning(double thinning) {
 void EMPairProduction::initRate(std::string filename, InteractionRatesIsotropic* intRatesIso) {
 	std::ifstream infile(filename.c_str());
 
-    std::vector<double> tabEnergy;
-    std::vector<double> tabRate;
+  std::vector<double> tabEnergy;
+  std::vector<double> tabRate;
     
 	if (!infile.good())
 		throw std::runtime_error("EMPairProduction: could not open file " + filename);
@@ -84,8 +84,8 @@ void EMPairProduction::initRate(std::string filename, InteractionRatesIsotropic*
 	}
 	infile.close();
 
-    intRatesIso->setTabulatedEnergy(tabEnergy);
-    intRatesIso->setTabulatedRate(tabRate);
+  intRatesIso->setTabulatedEnergy(tabEnergy);
+  intRatesIso->setTabulatedRate(tabRate);
     
 }
 
@@ -169,11 +169,11 @@ void EMPairProduction::initRatePositionDependentPhotonField(std::string filepath
 
 void EMPairProduction::initCumulativeRate(std::string filename, InteractionRatesIsotropic* intRatesIso) {
 	
-    std::ifstream infile(filename.c_str());
+  std::ifstream infile(filename.c_str());
 
-    std::vector<double> tabE;
-    std::vector<double> tabs;
-    std::vector<std::vector<double>> tabCDF;
+  std::vector<double> tabE;
+  std::vector<double> tabs;
+  std::vector<std::vector<double>> tabCDF;
     
 	if (!infile.good())
 		throw std::runtime_error("EMPairProduction: could not open file " + filename);
@@ -205,9 +205,9 @@ void EMPairProduction::initCumulativeRate(std::string filename, InteractionRates
 	}
 	infile.close();
     
-    intRatesIso->setTabulatedE(tabE);
-    intRatesIso->setTabulateds(tabs);
-    intRatesIso->setTabulatedCDF(tabCDF);
+  intRatesIso->setTabulatedE(tabE);
+  intRatesIso->setTabulateds(tabs);
+  intRatesIso->setTabulatedCDF(tabCDF);
 }
 
 void EMPairProduction::initCumulativeRatePositionDependentPhotonField(std::string filepath, InteractionRatesPositionDependent* intRatesPosDep) {
@@ -342,7 +342,7 @@ class PPSecondariesEnergyDistribution {
 };
 
 void EMPairProduction::getPerformInteractionTabs(const Vector3d &position, std::vector<double>& tabE, std::vector<double>& tabs, std::vector<std::vector<double>>& tabCDF) const {
-    if (!this->photonField->hasPositionDependence()){
+    if (!this->photonField->hasPositionDependence()) {
         
         InteractionRatesIsotropic* intRateIso = static_cast<InteractionRatesIsotropic*>(this->interactionRates.get());
         
