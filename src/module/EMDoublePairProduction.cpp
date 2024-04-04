@@ -29,9 +29,9 @@ void EMDoublePairProduction::setPhotonField(ref_ptr<PhotonField> photonField) {
 	setDescription("EMDoublePairProduction: " + fname);
     if (!this->photonField->hasPositionDependence()) {
         
-        this->interactionRates = new InteractionRatesIsotropic("interactionRatesIsotropic", false);
-        InteractionRatesIsotropic* intRatesIso = static_cast<InteractionRatesIsotropic*>(this->interactionRates.get()); 
-        initRate(getDataPath("EMDoublePairProduction/rate_" + fname + ".txt"), intRatesIso);
+        this->interactionRates = new InteractionRatesHomogeneous("interactionRatesHomogeneous", false);
+        InteractionRatesHomogeneous* intRatesHom = static_cast<InteractionRatesHomogeneous*>(this->interactionRates.get());
+        initRate(getDataPath("EMDoublePairProduction/rate_" + fname + ".txt"), intRatesHom);
         
     } else {
         
@@ -54,7 +54,7 @@ void EMDoublePairProduction::setThinning(double thinning) {
 	this->thinning = thinning;
 }
 
-void EMDoublePairProduction::initRate(std::string filename, InteractionRatesIsotropic* intRatesIso) {
+void EMDoublePairProduction::initRate(std::string filename, InteractionRatesHomogeneous* intRatesHom) {
 	std::ifstream infile(filename.c_str());
 
     std::vector<double> tabEnergy;
@@ -76,8 +76,8 @@ void EMDoublePairProduction::initRate(std::string filename, InteractionRatesIsot
 	}
 	infile.close();
     
-    intRatesIso->setTabulatedEnergy(tabEnergy);
-    intRatesIso->setTabulatedRate(tabRate);
+    intRatesHom->setTabulatedEnergy(tabEnergy);
+    intRatesHom->setTabulatedRate(tabRate);
     
 }
 
@@ -163,10 +163,10 @@ void EMDoublePairProduction::initRatePositionDependentPhotonField(std::string fi
 void EMDoublePairProduction::getProcessTabs(const Vector3d &position, std::vector<double> &tabEnergy, std::vector<double> &tabRate) const {
     if (!this->photonField->hasPositionDependence()) {
         
-        InteractionRatesIsotropic* intRateIso = static_cast<InteractionRatesIsotropic*>(this->interactionRates.get());
+        InteractionRatesHomogeneous* intRateHom = static_cast<InteractionRatesHomogeneous*>(this->interactionRates.get());
         
-        tabEnergy = intRateIso->getTabulatedEnergy();
-        tabRate = intRateIso->getTabulatedRate();
+        tabEnergy = intRateHom->getTabulatedEnergy();
+        tabRate = intRateHom->getTabulatedRate();
         
     } else {
         

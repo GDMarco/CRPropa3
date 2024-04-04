@@ -33,11 +33,11 @@ void EMPairProduction::setPhotonField(ref_ptr<PhotonField> photonField) {
     
     if (!this->photonField->hasPositionDependence()){
         
-        this->interactionRates = new InteractionRatesIsotropic("interactionRatesIsotropic", false);
-        InteractionRatesIsotropic* intRatesIso = static_cast<InteractionRatesIsotropic*>(this->interactionRates.get());
+        this->interactionRates = new InteractionRatesHomogeneous("interactionRatesHomogeneous", false);
+        InteractionRatesHomogeneous* intRatesHom = static_cast<InteractionRatesHomogeneous*>(this->interactionRates.get());
         
-        initRate(getDataPath("EMPairProduction/rate_" + fname + ".txt"), intRatesIso);
-        initCumulativeRate(getDataPath("EMPairProduction/cdf_" + fname + ".txt"), intRatesIso);
+        initRate(getDataPath("EMPairProduction/rate_" + fname + ".txt"), intRatesHom);
+        initCumulativeRate(getDataPath("EMPairProduction/cdf_" + fname + ".txt"), intRatesHom);
         
     } else {
         
@@ -62,7 +62,7 @@ void EMPairProduction::setThinning(double thinning) {
 	this->thinning = thinning;
 }
 
-void EMPairProduction::initRate(std::string filename, InteractionRatesIsotropic* intRatesIso) {
+void EMPairProduction::initRate(std::string filename, InteractionRatesHomogeneous* intRatesHom) {
 	std::ifstream infile(filename.c_str());
 
   std::vector<double> tabEnergy;
@@ -84,8 +84,8 @@ void EMPairProduction::initRate(std::string filename, InteractionRatesIsotropic*
 	}
 	infile.close();
 
-  intRatesIso->setTabulatedEnergy(tabEnergy);
-  intRatesIso->setTabulatedRate(tabRate);
+  intRatesHom->setTabulatedEnergy(tabEnergy);
+  intRatesHom->setTabulatedRate(tabRate);
     
 }
 
@@ -167,7 +167,7 @@ void EMPairProduction::initRatePositionDependentPhotonField(std::string filepath
     intRatesPosDep->setPhotonDict(photonDict);
 }
 
-void EMPairProduction::initCumulativeRate(std::string filename, InteractionRatesIsotropic* intRatesIso) {
+void EMPairProduction::initCumulativeRate(std::string filename, InteractionRatesHomogeneous* intRatesHom) {
 	
   std::ifstream infile(filename.c_str());
 
@@ -205,9 +205,9 @@ void EMPairProduction::initCumulativeRate(std::string filename, InteractionRates
 	}
 	infile.close();
     
-  intRatesIso->setTabulatedE(tabE);
-  intRatesIso->setTabulateds(tabs);
-  intRatesIso->setTabulatedCDF(tabCDF);
+  intRatesHom->setTabulatedE(tabE);
+  intRatesHom->setTabulateds(tabs);
+  intRatesHom->setTabulatedCDF(tabCDF);
 }
 
 void EMPairProduction::initCumulativeRatePositionDependentPhotonField(std::string filepath, InteractionRatesPositionDependent* intRatesPosDep) {
@@ -344,11 +344,11 @@ class PPSecondariesEnergyDistribution {
 void EMPairProduction::getPerformInteractionTabs(const Vector3d &position, std::vector<double> &tabE, std::vector<double> &tabs, std::vector<std::vector<double>> &tabCDF) const {
     if (!this->photonField->hasPositionDependence()){
         
-        InteractionRatesIsotropic* intRateIso = static_cast<InteractionRatesIsotropic*>(this->interactionRates.get());
+        InteractionRatesHomogeneous* intRateHom = static_cast<InteractionRatesHomogeneous*>(this->interactionRates.get());
         
-        tabE = intRateIso->getTabulatedE();
-        tabs = intRateIso->getTabulateds();
-        tabCDF = intRateIso->getTabulatedCDF();
+        tabE = intRateHom->getTabulatedE();
+        tabs = intRateHom->getTabulateds();
+        tabCDF = intRateHom->getTabulatedCDF();
         
     } else {
         
@@ -383,10 +383,10 @@ void EMPairProduction::getPerformInteractionTabs(const Vector3d &position, std::
 void EMPairProduction::getProcessTabs(const Vector3d &position, std::vector<double> &tabEnergy, std::vector<double> &tabRate) const {
     if (!this->photonField->hasPositionDependence()) {
         
-        InteractionRatesIsotropic* intRateIso = static_cast<InteractionRatesIsotropic*>(this->interactionRates.get());
+        InteractionRatesHomogeneous* intRateHom = static_cast<InteractionRatesHomogeneous*>(this->interactionRates.get());
         
-        tabEnergy = intRateIso->getTabulatedEnergy();
-        tabRate = intRateIso->getTabulatedRate();
+        tabEnergy = intRateHom->getTabulatedEnergy();
+        tabRate = intRateHom->getTabulatedRate();
     
     } else {
         

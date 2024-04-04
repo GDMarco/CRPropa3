@@ -23,11 +23,11 @@ void EMTripletPairProduction::setPhotonField(ref_ptr<PhotonField> photonField) {
 	setDescription("EMTripletPairProduction: " + fname);
     if (!this->photonField->hasPositionDependence()){
         
-        this->interactionRates = new InteractionRatesIsotropic("interactionRatesIsotropic", false);
-        InteractionRatesIsotropic* intRatesIso = static_cast<InteractionRatesIsotropic*>(this->interactionRates.get());
+        this->interactionRates = new InteractionRatesHomogeneous("interactionRatesHomogeneous", false);
+        InteractionRatesHomogeneous* intRatesHom = static_cast<InteractionRatesHomogeneous*>(this->interactionRates.get());
         
-        initRate(getDataPath("EMTripletPairProduction/rate_" + fname + ".txt"), intRatesIso);
-        initCumulativeRate(getDataPath("EMTripletPairProduction/cdf_" + fname + ".txt"), intRatesIso);
+        initRate(getDataPath("EMTripletPairProduction/rate_" + fname + ".txt"), intRatesHom);
+        initCumulativeRate(getDataPath("EMTripletPairProduction/cdf_" + fname + ".txt"), intRatesHom);
         
     } else {
         
@@ -52,7 +52,7 @@ void EMTripletPairProduction::setThinning(double thinning) {
 	this->thinning = thinning;
 }
 
-void EMTripletPairProduction::initRate(std::string filename, InteractionRatesIsotropic* intRatesIso) {
+void EMTripletPairProduction::initRate(std::string filename, InteractionRatesHomogeneous* intRatesHom) {
 	std::ifstream infile(filename.c_str());
 
     std::vector<double> tabEnergy;
@@ -74,8 +74,8 @@ void EMTripletPairProduction::initRate(std::string filename, InteractionRatesIso
 	}
 	infile.close();
     
-    intRatesIso->setTabulatedEnergy(tabEnergy);
-    intRatesIso->setTabulatedRate(tabRate);
+    intRatesHom->setTabulatedEnergy(tabEnergy);
+    intRatesHom->setTabulatedRate(tabRate);
 }
 
 std::string EMTripletPairProduction::splitFilename(const std::string str) {
@@ -156,7 +156,7 @@ void EMTripletPairProduction::initRatePositionDependentPhotonField(std::string f
     intRatesPosDep->setPhotonDict(photonDict);
 }
      
-void EMTripletPairProduction::initCumulativeRate(std::string filename, InteractionRatesIsotropic* intRatesIso) {
+void EMTripletPairProduction::initCumulativeRate(std::string filename, InteractionRatesHomogeneous* intRatesHom) {
 	std::ifstream infile(filename.c_str());
 
     std::vector<double> tabE;
@@ -194,9 +194,9 @@ void EMTripletPairProduction::initCumulativeRate(std::string filename, Interacti
 	}
 	infile.close();
     
-    intRatesIso->setTabulatedE(tabE);
-    intRatesIso->setTabulateds(tabs);
-    intRatesIso->setTabulatedCDF(tabCDF);
+    intRatesHom->setTabulatedE(tabE);
+    intRatesHom->setTabulateds(tabs);
+    intRatesHom->setTabulatedCDF(tabCDF);
 }
 
 void EMTripletPairProduction::initCumulativeRatePositionDependentPhotonField(std::string filepath, InteractionRatesPositionDependent* intRatesPosDep) {
@@ -262,11 +262,11 @@ void EMTripletPairProduction::initCumulativeRatePositionDependentPhotonField(std
 void EMTripletPairProduction::getPerformInteractionTabs(const Vector3d &position, std::vector<double> &tabE, std::vector<double> &tabs, std::vector<std::vector<double>> &tabCDF) const {
     if (!this->photonField->hasPositionDependence()){
         
-        InteractionRatesIsotropic* intRateIso = static_cast<InteractionRatesIsotropic*>(this->interactionRates.get());
+        InteractionRatesHomogeneous* intRateHom = static_cast<InteractionRatesHomogeneous*>(this->interactionRates.get());
         
-        tabE = intRateIso->getTabulatedE();
-        tabs = intRateIso->getTabulateds();
-        tabCDF = intRateIso->getTabulatedCDF();
+        tabE = intRateHom->getTabulatedE();
+        tabs = intRateHom->getTabulateds();
+        tabCDF = intRateHom->getTabulatedCDF();
         
     } else {
         
@@ -301,10 +301,10 @@ void EMTripletPairProduction::getPerformInteractionTabs(const Vector3d &position
 void EMTripletPairProduction::getProcessTabs(const Vector3d &position, std::vector<double> &tabEnergy, std::vector<double> &tabRate) const {
     if (!this->photonField->hasPositionDependence()) {
         
-        InteractionRatesIsotropic* intRateIso = static_cast<InteractionRatesIsotropic*>(this->interactionRates.get());
+        InteractionRatesHomogeneous* intRateHom = static_cast<InteractionRatesHomogeneous*>(this->interactionRates.get());
         
-        tabEnergy = intRateIso->getTabulatedEnergy();
-        tabRate = intRateIso->getTabulatedRate();
+        tabEnergy = intRateHom->getTabulatedEnergy();
+        tabRate = intRateHom->getTabulatedRate();
         
     } else {
         

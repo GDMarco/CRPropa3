@@ -46,12 +46,12 @@ protected:
 };
 
 /**
- @class InteractionRateIsotropic
- @brief Interaction rates decorator for tabulated isotropic interaction rates.
+ @class InteractionRateHomogeneous
+ @brief Interaction rates decorator for tabulated homogeneous interaction rates.
  */
-class InteractionRatesIsotropic: public InteractionRates {
+class InteractionRatesHomogeneous: public InteractionRates {
 public:
-    InteractionRatesIsotropic(const std::string ratesName, const bool isPositionDependent = true);
+    InteractionRatesHomogeneous(const std::string ratesName, const bool isPositionDependent = true);
     
     std::vector<double> getTabulatedEnergy();
     std::vector<double> getTabulatedRate();

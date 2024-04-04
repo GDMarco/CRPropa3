@@ -8,42 +8,42 @@
 
 namespace crpropa {
 
-InteractionRatesIsotropic::InteractionRatesIsotropic(std::string ratesName, bool isPositionDependent) : InteractionRates() {
+InteractionRatesHomogeneous::InteractionRatesHomogeneous(std::string ratesName, bool isPositionDependent) : InteractionRates() {
   this->ratesName = ratesName;
   this->isPositionDependent = isPositionDependent;
 }
 
-std::vector<double> InteractionRatesIsotropic::getTabulatedEnergy() {
+std::vector<double> InteractionRatesHomogeneous::getTabulatedEnergy() {
     return tabEnergy;
 }
 
-std::vector<double> InteractionRatesIsotropic::getTabulatedRate() {
+std::vector<double> InteractionRatesHomogeneous::getTabulatedRate() {
     return tabRate;
 }
 
-std::vector<double> InteractionRatesIsotropic::getTabulatedE() {
+std::vector<double> InteractionRatesHomogeneous::getTabulatedE() {
     return tabE;
 }
-std::vector<double> InteractionRatesIsotropic::getTabulateds() {
+std::vector<double> InteractionRatesHomogeneous::getTabulateds() {
     return tabs;
 }
-std::vector<std::vector<double>> InteractionRatesIsotropic::getTabulatedCDF() {
+std::vector<std::vector<double>> InteractionRatesHomogeneous::getTabulatedCDF() {
     return tabCDF;
 }
 
-void InteractionRatesIsotropic::setTabulatedEnergy (std::vector<double>& tabEnergy) {
+void InteractionRatesHomogeneous::setTabulatedEnergy (std::vector<double>& tabEnergy) {
     this->tabEnergy = tabEnergy;
 }
-void InteractionRatesIsotropic::setTabulatedRate (std::vector<double>& tabRate) {
+void InteractionRatesHomogeneous::setTabulatedRate (std::vector<double>& tabRate) {
     this->tabRate = tabRate;
 }
-void InteractionRatesIsotropic::setTabulatedE (std::vector<double>& tabE) {
+void InteractionRatesHomogeneous::setTabulatedE (std::vector<double>& tabE) {
     this->tabE = tabE;
 }
-void InteractionRatesIsotropic::setTabulateds (std::vector<double>& tabs) {
+void InteractionRatesHomogeneous::setTabulateds (std::vector<double>& tabs) {
     this->tabs = tabs;
 }
-void InteractionRatesIsotropic::setTabulatedCDF (std::vector<std::vector<double>>& tabCDF) {
+void InteractionRatesHomogeneous::setTabulatedCDF (std::vector<std::vector<double>>& tabCDF) {
     this->tabCDF = tabCDF;
 }
 

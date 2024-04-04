@@ -65,8 +65,8 @@ public:
 	void setInteractionTag(std::string tag);
 	std::string getInteractionTag() const;
 
-	void initRate(std::string filename, InteractionRatesIsotropic* intRatesIso);
-	void initCumulativeRate(std::string filename, InteractionRatesIsotropic* intRatesIso);
+	void initRate(std::string filename, InteractionRatesHomogeneous* intRatesHom);
+	void initCumulativeRate(std::string filename, InteractionRatesHomogeneous* intRatesHom);
     
     void initRatePositionDependentPhotonField(std::string filepath, InteractionRatesPositionDependent* intRatesPosDep);
     void initCumulativeRatePositionDependentPhotonField(std::string filepath, InteractionRatesPositionDependent* intRatesPosDep);
