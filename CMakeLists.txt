@@ -355,6 +355,7 @@ add_library(crpropa SHARED
   src/ParticleMass.cpp
   src/ParticleState.cpp
   src/PhotonBackground.cpp
+  src/NeutrinoBackground.cpp
   src/ProgressBar.cpp
   src/Random.cpp
   src/Source.cpp

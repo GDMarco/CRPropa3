@@ -41,6 +41,7 @@
 %ignore operator crpropa::ObserverFeature*;
 %ignore operator crpropa::MagneticField*;
 %ignore operator crpropa::PhotonField*;
+%ignore operator crpropa::NeutrinoField*;
 %ignore operator crpropa::AdvectionField*;
 %ignore operator crpropa::ParticleCollector*;
 %ignore operator crpropa::Density*;
@@ -288,6 +289,11 @@
 %template(PhotonFieldRefPtr) crpropa::ref_ptr<crpropa::PhotonField>;
 %feature("director") crpropa::PhotonField;
 %include "crpropa/PhotonBackground.h"
+
+%implicitconv crpropa::ref_ptr<crpropa::NeutrinoField>;
+%template(NeutrinoFieldRefPtr) crpropa::ref_ptr<crpropa::NeutrinoField>;
+%feature("director") crpropa::NeutrinoField;
+%include "crpropa/NeutrinoBackground.h"
 
 %implicitconv crpropa::ref_ptr<crpropa::AdvectionField>;
 %template(AdvectionFieldRefPtr) crpropa::ref_ptr<crpropa::AdvectionField>;

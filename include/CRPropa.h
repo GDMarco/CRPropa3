@@ -16,6 +16,7 @@
 #include "crpropa/ParticleMass.h"
 #include "crpropa/ParticleState.h"
 #include "crpropa/PhotonBackground.h"
+#include "crpropa/NeutrinoBackground.h"
 #include "crpropa/Random.h"
 #include "crpropa/Referenced.h"
 #include "crpropa/Source.h"
