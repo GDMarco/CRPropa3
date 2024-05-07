@@ -122,7 +122,7 @@ protected:
     void checkInputData() const;
     std::string splitFilename (const std::string str) const;
     
-    std::vector<std::vector<double>> photonEnergies;
+    std::vector<double> photonEnergies; // assuming all the nodes in the grid have the same energy binning!
     std::vector<std::vector<double>> photonDensity;
     std::unordered_map<int, Vector3d> photonDict;
 };
@@ -323,6 +323,16 @@ class ISRF_Freudenreich98: public TabularSpatialPhotonField {
 public:
     ISRF_Freudenreich98() : TabularSpatialPhotonField("ISRF_Freudenreich98", false, true) {}
 };
+
+
+/**
+Test for CMB position depedent ----> to compare the results between the "usual" CMB with the position dependent one for EMPP
+ */
+class CMB_PositionDependent: public TabularSpatialPhotonField {
+public:
+    CMB_PositionDependent() : TabularSpatialPhotonField("CMB_PositionDependent", false, true) {}
+};
+
 
 /**
  @class BlackbodyPhotonField
