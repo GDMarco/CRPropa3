@@ -96,7 +96,6 @@ std::string EMInverseComptonScattering::splitFilename(const std::string str) {
 
 void EMInverseComptonScattering::initRatePositionDependentPhotonField(std::string filepath, InteractionRatesPositionDependent* intRatesPosDep) {
     
-    std::vector<std::vector<double>> tabEnergy;
     std::vector<std::vector<double>> tabRate;
     
     std::__fs::filesystem::path dir = filepath;
@@ -122,14 +121,16 @@ void EMInverseComptonScattering::initRatePositionDependentPhotonField(std::strin
                 double a, b;
                 infile >> a >> b;
                 if (infile) {
-                    vecEnergy.push_back(pow(10, a) * eV);
+                    if (iFile == 0) {
+                        vecEnergy.push_back(pow(10, a) * eV);
+                        intRatesPosDep->setTabulatedEnergy(vecEnergy);
+                    }
                     vecRate.push_back(b / Mpc);
                 }
             }
             infile.ignore(std::numeric_limits < std::streamsize > ::max(), '\n');
         }
-        
-        tabEnergy.push_back(vecEnergy);
+   
         tabRate.push_back(vecRate);
         
         double x, y, z;
@@ -161,7 +162,6 @@ void EMInverseComptonScattering::initRatePositionDependentPhotonField(std::strin
         infile.close();
     }
     
-    intRatesPosDep->setTabulatedEnergy(tabEnergy);
     intRatesPosDep->setTabulatedRate(tabRate);
     intRatesPosDep->setPhotonDict(photonDict);
     
@@ -212,7 +212,6 @@ void EMInverseComptonScattering::initCumulativeRate(std::string filename, Intera
 
 void EMInverseComptonScattering::initCumulativeRatePositionDependentPhotonField(std::string filepath, InteractionRatesPositionDependent* intRatesPosDep) {
     
-    std::vector<std::vector<double>> tabE;
     std::vector<std::vector<double>> tabs;
     std::vector<std::vector<std::vector<double>>> tabCDF;
     
@@ -250,7 +249,10 @@ void EMInverseComptonScattering::initCumulativeRatePositionDependentPhotonField(
             infile >> a;
             if (!infile)
                 break;  // end of file
-            vecE.push_back(pow(10, a) * eV);
+            if (iFile == 0) {
+                vecE.push_back(pow(10, a) * eV);
+                intRatesPosDep->setTabulatedE(vecE);
+            }
             std::vector<double> cdf;
             for (int i = 0; i < tabs.size(); i++) {
                 infile >> a;
@@ -259,13 +261,12 @@ void EMInverseComptonScattering::initCumulativeRatePositionDependentPhotonField(
             vecCDF.push_back(cdf);
         }
         iFile = iFile + 1;
-        tabE.push_back(vecE);
+       
         tabs.push_back(vecs);
         tabCDF.push_back(vecCDF);
         infile.close();
     }
     
-    intRatesPosDep->setTabulatedE(tabE);
     intRatesPosDep->setTabulateds(tabs);
     intRatesPosDep->setTabulatedCDF(tabCDF);
 }
@@ -351,7 +352,7 @@ void EMInverseComptonScattering::getPerformInteractionTabs(const Vector3d &posit
         
         InteractionRatesPositionDependent* intRatePosDep = static_cast<InteractionRatesPositionDependent*>(this->interactionRates.get());
         
-        std::vector<std::vector<double>> E = intRatePosDep->getTabulatedE();
+        std::vector<double> E = intRatePosDep->getTabulatedE();
         std::vector<std::vector<double>> s = intRatePosDep->getTabulateds();
         std::vector<std::vector<std::vector<double>>> CDF = intRatePosDep->getTabulatedCDF();
         std::unordered_map<int,Vector3d> photonDict = intRatePosDep->getPhotonDict();
@@ -371,7 +372,7 @@ void EMInverseComptonScattering::getPerformInteractionTabs(const Vector3d &posit
             }
         }
         
-        tabE = E[iMin];
+        tabE = E;
         tabs = s[iMin];
         tabCDF = CDF[iMin];
     }
@@ -389,7 +390,7 @@ void EMInverseComptonScattering::getProcessTabs(const Vector3d &position, std::v
         
         InteractionRatesPositionDependent* intRatePosDep = static_cast<InteractionRatesPositionDependent*>(this->interactionRates.get());
         
-        std::vector<std::vector<double>> Energy = intRatePosDep->getTabulatedEnergy();
+        std::vector<double> Energy = intRatePosDep->getTabulatedEnergy();
         std::vector<std::vector<double>> Rate = intRatePosDep->getTabulatedRate();
         std::unordered_map<int,Vector3d> photonDict = intRatePosDep->getPhotonDict();
         
@@ -408,7 +409,7 @@ void EMInverseComptonScattering::getProcessTabs(const Vector3d &position, std::v
             }
         }
         
-        tabEnergy = Energy[iMin];
+        tabEnergy = Energy;
         tabRate = Rate[iMin];
     }
 }

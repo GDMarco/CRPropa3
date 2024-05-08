@@ -34,7 +34,7 @@ private:
 	double limit;						// limit the step to a fraction of the mean free path
 	double thinning;					// factor of the thinning (0: no thinning, 1: maximum thinning)
 	std::string interactionTag = "EMPP";
-  ref_ptr<InteractionRates> interactionRates;
+    ref_ptr<InteractionRates> interactionRates;
     
 public:
 	/** Constructor
@@ -67,11 +67,11 @@ public:
 	void setInteractionTag(std::string tag);
 	std::string getInteractionTag() const;
 
-  void initRate(std::string filename, InteractionRatesHomogeneous* intRatesHom);
-  void initCumulativeRate(std::string filename, InteractionRatesHomogeneous* intRatesHom);
+    void initRate(std::string filename, InteractionRatesHomogeneous* intRatesHom);
+    void initCumulativeRate(std::string filename, InteractionRatesHomogeneous* intRatesHom);
     
-  void initRatePositionDependentPhotonField(std::string filepath, InteractionRatesPositionDependent* intRatesPosDep);
-  void initCumulativeRatePositionDependentPhotonField(std::string filepath, InteractionRatesPositionDependent* intRatesPosDep);
+    void initRatePositionDependentPhotonField(std::string filepath, InteractionRatesPositionDependent* intRatesPosDep);
+    void initCumulativeRatePositionDependentPhotonField(std::string filepath, InteractionRatesPositionDependent* intRatesPosDep);
 
     void getPerformInteractionTabs(const Vector3d &position, std::vector<double> &tabE, std::vector<double> &tabs, std::vector<std::vector<double>> &tabCDF) const;
     void getProcessTabs(const Vector3d &position, std::vector<double> &tabEnergy, std::vector<double> &tabRate) const;

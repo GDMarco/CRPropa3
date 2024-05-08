@@ -97,7 +97,6 @@ std::string EMPairProduction::splitFilename(const std::string str) {
                                                        
 void EMPairProduction::initRatePositionDependentPhotonField(std::string filepath, InteractionRatesPositionDependent* intRatesPosDep) {
     
-    std::vector<std::vector<double>> tabEnergy;
     std::vector<std::vector<double>> tabRate;
     
     std::__fs::filesystem::path dir = filepath;
@@ -123,14 +122,16 @@ void EMPairProduction::initRatePositionDependentPhotonField(std::string filepath
                 double a, b;
                 infile >> a >> b;
                 if (infile) {
-                    vecEnergy.push_back(pow(10, a) * eV);
+                    if (iFile == 0) {
+                        vecEnergy.push_back(pow(10, a) * eV);
+                        intRatesPosDep->setTabulatedEnergy(vecEnergy);
+                    }
                     vecRate.push_back(b / Mpc);
                 }
             }
             infile.ignore(std::numeric_limits < std::streamsize > ::max(), '\n');
         }
         
-        tabEnergy.push_back(vecEnergy);
         tabRate.push_back(vecRate);
         
         double x, y, z;
@@ -162,7 +163,6 @@ void EMPairProduction::initRatePositionDependentPhotonField(std::string filepath
         infile.close();
     }
     
-    intRatesPosDep->setTabulatedEnergy(tabEnergy);
     intRatesPosDep->setTabulatedRate(tabRate);
     intRatesPosDep->setPhotonDict(photonDict);
 }
@@ -212,7 +212,7 @@ void EMPairProduction::initCumulativeRate(std::string filename, InteractionRates
 
 void EMPairProduction::initCumulativeRatePositionDependentPhotonField(std::string filepath, InteractionRatesPositionDependent* intRatesPosDep) {
     
-    std::vector<std::vector<double>> tabE;
+    std::vector<double> tabE;
     std::vector<std::vector<double>> tabs;
     std::vector<std::vector<std::vector<double>>> tabCDF;
     
@@ -250,7 +250,10 @@ void EMPairProduction::initCumulativeRatePositionDependentPhotonField(std::strin
             infile >> a;
             if (!infile)
                 break;  // end of file
-            vecE.push_back(pow(10, a) * eV);
+            if (iFile == 0) {
+                vecE.push_back(pow(10, a) * eV);
+                intRatesPosDep->setTabulatedE(vecE);
+            }
             std::vector<double> cdf;
             for (int i = 0; i < tabs.size(); i++) {
                 infile >> a;
@@ -259,13 +262,12 @@ void EMPairProduction::initCumulativeRatePositionDependentPhotonField(std::strin
             vecCDF.push_back(cdf);
         }
         iFile = iFile + 1;
-        tabE.push_back(vecE);
+        
         tabs.push_back(vecs);
         tabCDF.push_back(vecCDF);
         infile.close();
     }
     
-    intRatesPosDep->setTabulatedE(tabE);
     intRatesPosDep->setTabulateds(tabs);
     intRatesPosDep->setTabulatedCDF(tabCDF);
 }
@@ -354,7 +356,7 @@ void EMPairProduction::getPerformInteractionTabs(const Vector3d &position, std::
         
         InteractionRatesPositionDependent* intRatePosDep = static_cast<InteractionRatesPositionDependent*>(this->interactionRates.get());
         
-        std::vector<std::vector<double>> E = intRatePosDep->getTabulatedE();
+        std::vector<double> E = intRatePosDep->getTabulatedE();
         std::vector<std::vector<double>> s = intRatePosDep->getTabulateds();
         std::vector<std::vector<std::vector<double>>> CDF = intRatePosDep->getTabulatedCDF();
         std::unordered_map<int,Vector3d> photonDict = intRatePosDep->getPhotonDict();
@@ -374,7 +376,7 @@ void EMPairProduction::getPerformInteractionTabs(const Vector3d &position, std::
             }
         }
         
-        tabE = E[iMin];
+        tabE = E;
         tabs = s[iMin];
         tabCDF = CDF[iMin];
     }
@@ -392,7 +394,7 @@ void EMPairProduction::getProcessTabs(const Vector3d &position, std::vector<doub
         
         InteractionRatesPositionDependent* intRatePosDep = static_cast<InteractionRatesPositionDependent*>(this->interactionRates.get());
         
-        std::vector<std::vector<double>> Energy = intRatePosDep->getTabulatedEnergy();
+        std::vector<double> Energy = intRatePosDep->getTabulatedEnergy();
         std::vector<std::vector<double>> Rate = intRatePosDep->getTabulatedRate();
         std::unordered_map<int,Vector3d> photonDict = intRatePosDep->getPhotonDict();
         
@@ -412,7 +414,7 @@ void EMPairProduction::getProcessTabs(const Vector3d &position, std::vector<doub
             }
         }
         
-        tabEnergy = Energy[iMin];
+        tabEnergy = Energy;
         tabRate = Rate[iMin];
     }
 }

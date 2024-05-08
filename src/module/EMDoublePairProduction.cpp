@@ -88,8 +88,7 @@ std::string EMDoublePairProduction::splitFilename(const std::string str) {
 }
 
 void EMDoublePairProduction::initRatePositionDependentPhotonField(std::string filepath, InteractionRatesPositionDependent* intRatesPosDep) {
-    
-    std::vector<std::vector<double>> tabEnergy;
+
     std::vector<std::vector<double>> tabRate;
     
     std::__fs::filesystem::path dir = filepath;
@@ -115,14 +114,16 @@ void EMDoublePairProduction::initRatePositionDependentPhotonField(std::string fi
                 double a, b;
                 infile >> a >> b;
                 if (infile) {
-                    vecEnergy.push_back(pow(10, a) * eV);
+                    if (iFile == 0) {
+                        vecEnergy.push_back(pow(10, a) * eV);
+                        intRatesPosDep->setTabulatedEnergy(vecEnergy);
+                    }
                     vecRate.push_back(b / Mpc);
                 }
             }
             infile.ignore(std::numeric_limits < std::streamsize > ::max(), '\n');
         }
         
-        tabEnergy.push_back(vecEnergy);
         tabRate.push_back(vecRate);
         
         double x, y, z;
@@ -153,8 +154,7 @@ void EMDoublePairProduction::initRatePositionDependentPhotonField(std::string fi
         iFile = iFile + 1;
         infile.close();
     }
-    
-    intRatesPosDep->setTabulatedEnergy(tabEnergy);
+
     intRatesPosDep->setTabulatedRate(tabRate);
     intRatesPosDep->setPhotonDict(photonDict);
     
@@ -172,7 +172,7 @@ void EMDoublePairProduction::getProcessTabs(const Vector3d &position, std::vecto
         
         InteractionRatesPositionDependent* intRatePosDep = static_cast<InteractionRatesPositionDependent*>(this->interactionRates.get());
         
-        std::vector<std::vector<double>> Energy = intRatePosDep->getTabulatedEnergy();
+        std::vector<double> Energy = intRatePosDep->getTabulatedEnergy();
         std::vector<std::vector<double>> Rate = intRatePosDep->getTabulatedRate();
         std::unordered_map<int,Vector3d> photonDict = intRatePosDep->getPhotonDict();
         
@@ -191,7 +191,7 @@ void EMDoublePairProduction::getProcessTabs(const Vector3d &position, std::vecto
             }
         }
         
-        tabEnergy = Energy[iMin];
+        tabEnergy = Energy;
         tabRate = Rate[iMin];
     }
 }

@@ -52,13 +52,13 @@ InteractionRatesPositionDependent::InteractionRatesPositionDependent(std::string
   this->isPositionDependent = isPositionDependent;
 }
 
-std::vector<std::vector<double>> InteractionRatesPositionDependent::getTabulatedEnergy() {
+std::vector<double> InteractionRatesPositionDependent::getTabulatedEnergy() {
     return tabEnergy;
 }
 std::vector<std::vector<double>> InteractionRatesPositionDependent::getTabulatedRate() {
     return tabRate;
 }
-std::vector<std::vector<double>> InteractionRatesPositionDependent::getTabulatedE() {
+std::vector<double> InteractionRatesPositionDependent::getTabulatedE() {
     return tabE;
 }
 std::vector<std::vector<double>> InteractionRatesPositionDependent::getTabulateds() {
@@ -71,13 +71,13 @@ std::unordered_map<int, Vector3d> InteractionRatesPositionDependent::getPhotonDi
     return photonDict;
 }
 
-void InteractionRatesPositionDependent::setTabulatedEnergy (std::vector<std::vector<double>>& tabEnergy) {
+void InteractionRatesPositionDependent::setTabulatedEnergy (std::vector<double>& tabEnergy) {
     this->tabEnergy = tabEnergy;
 }
 void InteractionRatesPositionDependent::setTabulatedRate (std::vector<std::vector<double>>& tabRate) {
     this->tabRate = tabRate;
 }
-void InteractionRatesPositionDependent::setTabulatedE (std::vector<std::vector<double>>& tabE) {
+void InteractionRatesPositionDependent::setTabulatedE (std::vector<double>& tabE) {
     this->tabE = tabE;
 }
 void InteractionRatesPositionDependent::setTabulateds (std::vector<std::vector<double>>& tabs) {
