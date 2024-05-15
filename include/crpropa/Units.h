@@ -68,6 +68,7 @@ static const double amu = 1.660538921e-27 * kilogram;
 static const double mass_proton = 1.67262158e-27 * kilogram;
 static const double mass_neutron = 1.67492735e-27 * kilogram;
 static const double mass_electron = 9.10938291e-31 * kilogram;
+static const double mass_W = 80.377 * 1e9 * 1.602176487e-19 *  (2.99792458e-2 * 1e-16) * kilogram;
 static const double h_planck = 6.62606957e-34 * joule * second;
 static const double k_boltzmann = 1.3806488e-23 * joule / kelvin;
 static const double mu0 = 4 * M_PI * 1e-7 * newton / ampere / ampere;
