@@ -310,7 +310,7 @@ double TabularSpatialPhotonField::getMinimumPhotonEnergy(double z, const Vector3
         }
     }
     */
-    return photonEnergies[0]; // assuming all the nodes have the same energy
+    return photonEnergies[0]; // assuming all the nodes have the same energy bins
 }
 
 double TabularSpatialPhotonField::getMaximumPhotonEnergy(double z, const Vector3d &pos) const {
@@ -331,7 +331,7 @@ double TabularSpatialPhotonField::getMaximumPhotonEnergy(double z, const Vector3
         }
     }
     */
-    return photonEnergies[photonEnergies.size() - 1]; // assuming all the nodes have the same energy
+    return photonEnergies[photonEnergies.size() - 1]; // assuming all the nodes have the same energy bins
 }
 
 std::vector<double> TabularSpatialPhotonField::readPhotonEnergy(std::string filePath) {

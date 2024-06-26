@@ -326,7 +326,7 @@ public:
 
 
 /**
-Test for CMB position depedent ----> to compare the results between the "usual" CMB with the position dependent one for EMPP
+Test for CMB position depedent (7 nodes) ----> to compare the results between the "usual" CMB with the position dependent one for EMPP
  */
 class CMB_PositionDependent: public TabularSpatialPhotonField {
 public:

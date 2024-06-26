@@ -274,28 +274,12 @@ void EMTripletPairProduction::getPerformInteractionTabs(const Vector3d &position
         InteractionRatesPositionDependent* intRatePosDep = static_cast<InteractionRatesPositionDependent*>(this->interactionRates.get());
         
         std::vector<double> E = intRatePosDep->getTabulatedE();
-        std::vector<std::vector<double>> s = intRatePosDep->getTabulateds();
-        std::vector<std::vector<std::vector<double>>> CDF = intRatePosDep->getTabulatedCDF();
-        std::unordered_map<int,Vector3d> photonDict = intRatePosDep->getPhotonDict();
-        
-        double dMin = 1000. * kpc;
-        int iMin = -1;
-        
-        for (const auto& el : photonDict) {
-            
-            Vector3d posNode = el.second;
-            double d;
-            d = sqrt((- posNode.x / kpc - position.x / kpc) * (- posNode.x / kpc - position.x / kpc) + (posNode.y / kpc - position.y / kpc) * (posNode.y / kpc - position.y / kpc) + (posNode.z / kpc - position.z / kpc) * (posNode.z / kpc - position.z / kpc));
-            
-            if (d < dMin) {
-                dMin = d;
-                iMin = el.first;
-            }
-        }
+        std::vector<double> s = intRatePosDep->getClosests(position);
+        std::vector<std::vector<double>> CDF = intRatePosDep->getClosestCDF(position);
         
         tabE = E;
-        tabs = s[iMin];
-        tabCDF = CDF[iMin];
+        tabs = s;
+        tabCDF = CDF;
     }
 }
 
@@ -312,26 +296,10 @@ void EMTripletPairProduction::getProcessTabs(const Vector3d &position, std::vect
         InteractionRatesPositionDependent* intRatePosDep = static_cast<InteractionRatesPositionDependent*>(this->interactionRates.get());
         
         std::vector<double> Energy = intRatePosDep->getTabulatedEnergy();
-        std::vector<std::vector<double>> Rate = intRatePosDep->getTabulatedRate();
-        std::unordered_map<int,Vector3d> photonDict = intRatePosDep->getPhotonDict();
-        
-        double dMin = 1000. * kpc;
-        int iMin = -1;
-        
-        for (const auto& el : photonDict) {
-            
-            Vector3d posNode = el.second;
-            double d;
-            d = sqrt((- posNode.x / kpc - position.x / kpc) * (- posNode.x / kpc - position.x / kpc) + (posNode.y / kpc - position.y / kpc) * (posNode.y / kpc - position.y / kpc) + (posNode.z / kpc - position.z / kpc) * (posNode.z / kpc - position.z / kpc));
-            
-            if (d < dMin) {
-                dMin = d;
-                iMin = el.first;
-            }
-        }
+        std::vector<double> Rate = intRatePosDep->getClosestRate(position);
         
         tabEnergy = Energy;
-        tabRate = Rate[iMin];
+        tabRate = Rate;
     }
 }
 

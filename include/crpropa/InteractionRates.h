@@ -88,13 +88,16 @@ public:
     std::vector<std::vector<double>> getTabulateds();
     std::vector<std::vector<std::vector<double>>> getTabulatedCDF();
     std::unordered_map<int, Vector3d> getPhotonDict();
+    std::vector<double> getClosestRate(const Vector3d &position);
+    std::vector<double> getClosests(const Vector3d &position);
+    std::vector<std::vector<double>> getClosestCDF(const Vector3d &position);
     
     void setTabulatedEnergy (std::vector<double>& tabEnergy);
     void setTabulatedRate (std::vector<std::vector<double>>& tabRate);
     void setTabulatedE (std::vector<double>& tabE);
     void setTabulateds (std::vector<std::vector<double>>& tabs);
     void setTabulatedCDF (std::vector<std::vector<std::vector<double>>>& tabCDF);
-    void setPhotonDict (std::unordered_map<int, Vector3d>& photonDict); 
+    void setPhotonDict (std::unordered_map<int, Vector3d>& photonDict);
 
 protected:
     
