@@ -159,7 +159,7 @@ void EMDoublePairProduction::initRatePositionDependentPhotonField(std::string fi
     intRatesPosDep->setPhotonDict(photonDict);
     
 }
-
+/**
 void EMDoublePairProduction::getProcessTabs(const Vector3d &position, std::vector<double> &tabEnergy, std::vector<double> &tabRate) const {
     if (!this->photonField->hasPositionDependence()) {
         
@@ -179,7 +179,7 @@ void EMDoublePairProduction::getProcessTabs(const Vector3d &position, std::vecto
         tabRate = Rate;
     }
 }
-
+ */
 void EMDoublePairProduction::performInteraction(Candidate *candidate) const {
 	// the photon is lost after the interaction
 	candidate->setActive(false);
@@ -221,17 +221,8 @@ void EMDoublePairProduction::process(Candidate *candidate) const {
 	double E = (1 + z) * candidate->current.getEnergy();
     Vector3d position = candidate->current.getPosition();
 
-    std::vector<double> tabEnergy;
-    std::vector<double> tabRate;
-    
-    getProcessTabs(position, tabEnergy, tabRate);
-    
-	// check if in tabulated energy range
-	if (E < tabEnergy.front() or (E > tabEnergy.back()))
-		return;
-
 	// interaction rate
-	double rate = interpolate(E, tabEnergy, tabRate);
+    double rate = this->interactionRates->getProcessRate(E, position);
 	rate *= pow_integer<2>(1 + z) * photonField->getRedshiftScaling(z);
 
 	// check for interaction

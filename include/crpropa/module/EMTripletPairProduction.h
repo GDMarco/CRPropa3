@@ -71,14 +71,16 @@ public:
     void initRatePositionDependentPhotonField(std::string filepath, InteractionRatesPositionDependent* intRatesPosDep);
     void initCumulativeRatePositionDependentPhotonField(std::string filepath, InteractionRatesPositionDependent* intRatesPosDep);
 
+    /**
     void getPerformInteractionTabs(const Vector3d &position, std::vector<double> &tabE, std::vector<double> &tabs, std::vector<std::vector<double>> &tabCDF) const;
     void getProcessTabs(const Vector3d &position, std::vector<double> &tabEnergy, std::vector<double> &tabRate) const;
-
+    */
+    
 	void process(Candidate *candidate) const;
 	void performInteraction(Candidate *candidate) const;
 
 protected:
-    std::string splitFilename (const std::string str);
+    std::string splitFilename(const std::string str);
 
 };
 /** @}*/

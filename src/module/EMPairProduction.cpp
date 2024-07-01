@@ -343,6 +343,7 @@ class PPSecondariesEnergyDistribution {
 		}
 };
 
+/**
 void EMPairProduction::getPerformInteractionTabs(const Vector3d &position, std::vector<double> &tabE, std::vector<double> &tabs, std::vector<std::vector<double>> &tabCDF) const {
     if (!this->photonField->hasPositionDependence()){
         
@@ -365,7 +366,7 @@ void EMPairProduction::getPerformInteractionTabs(const Vector3d &position, std::
         tabCDF = CDF;
     }
 }
-
+ 
 void EMPairProduction::getProcessTabs(const Vector3d &position, std::vector<double> &tabEnergy, std::vector<double> &tabRate) const {
     if (!this->photonField->hasPositionDependence()) {
         
@@ -385,6 +386,7 @@ void EMPairProduction::getProcessTabs(const Vector3d &position, std::vector<doub
         tabRate = Rate;
     }
 }
+*/
 
 void EMPairProduction::performInteraction(Candidate *candidate) const {
     
@@ -393,18 +395,19 @@ void EMPairProduction::performInteraction(Candidate *candidate) const {
     double E = candidate->current.getEnergy() * (1 + z);
     Vector3d position = candidate->current.getPosition();
     
-    std::vector<double> tabE;
-    std::vector<double> tabs;
-    std::vector<std::vector<double>> tabCDF;
-    
-    getPerformInteractionTabs(position, tabE, tabs, tabCDF);
-    
     // cosmic ray photon is lost after interacting
     candidate->setActive(false);
 
     // check if secondary electron pair needs to be produced
     if (not haveElectrons)
         return;
+    
+    // to remove after the implementation...
+    std::vector<double> tabE;
+    std::vector<double> tabs;
+    std::vector<std::vector<double>> tabCDF;
+    
+    this->interactionRates->getPerformInteractionTabs(position, tabE, tabs, tabCDF);
 
     // check if in tabulated energy range
     if (E < tabE.front() or (E > tabE.back()))
@@ -417,6 +420,8 @@ void EMPairProduction::performInteraction(Candidate *candidate) const {
     double lo = std::max(4 * mec2 * mec2, tabs[j-1]);  // first s-tabulation point below min(s_kin) = (2 me c^2)^2; ensure physical value
     double hi = tabs[j];
     double s = lo + random.rand() * (hi - lo);
+    // ... until here
+    
     // sample electron / positron energy
     static PPSecondariesEnergyDistribution interpolation;
     double Ee = interpolation.sample(E, s);
@@ -437,7 +442,7 @@ void EMPairProduction::performInteraction(Candidate *candidate) const {
 		double w = 1. / pow(f, thinning);
 		candidate->addSecondary(11, Ep / (1 + z), pos, w, interactionTag);
 	}
-	if (random.rand() < pow(1 - f, thinning)){
+	if (random.rand() < pow(1 - f, thinning)) {
 		double w = 1. / pow(1 - f, thinning);
 		candidate->addSecondary(-11, Ee / (1 + z), pos, w, interactionTag);	
 	}
@@ -454,6 +459,8 @@ void EMPairProduction::process(Candidate *candidate) const {
     double E = candidate->current.getEnergy() * (1 + z);
     Vector3d position = candidate->current.getPosition();
     
+    /**
+    // to remove in the new optimization...
     std::vector<double> tabEnergy;
     std::vector<double> tabRate;
     
@@ -466,7 +473,12 @@ void EMPairProduction::process(Candidate *candidate) const {
     
     // interaction rate
     double rate = interpolate(E, tabEnergy, tabRate);
+    // ... until here
+    */
     
+    // New optimization
+    double rate = this->interactionRates->getProcessRate(E, position);
+     
     rate *= pow_integer<2>(1 + z) * photonField->getRedshiftScaling(z);
     
     // run this loop at least once to limit the step size

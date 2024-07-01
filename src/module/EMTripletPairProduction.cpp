@@ -260,6 +260,7 @@ void EMTripletPairProduction::initCumulativeRatePositionDependentPhotonField(std
     intRatesPosDep->setTabulatedCDF(tabCDF);
 }
 
+/**
 void EMTripletPairProduction::getPerformInteractionTabs(const Vector3d &position, std::vector<double> &tabE, std::vector<double> &tabs, std::vector<std::vector<double>> &tabCDF) const {
     if (!this->photonField->hasPositionDependence()){
         
@@ -302,6 +303,7 @@ void EMTripletPairProduction::getProcessTabs(const Vector3d &position, std::vect
         tabRate = Rate;
     }
 }
+ */
 
 void EMTripletPairProduction::performInteraction(Candidate *candidate) const {
 	int id = candidate->current.getId();
@@ -317,7 +319,7 @@ void EMTripletPairProduction::performInteraction(Candidate *candidate) const {
     std::vector<double> tabs;
     std::vector<std::vector<double>> tabCDF;
     
-    getPerformInteractionTabs(position, tabE, tabs, tabCDF);
+    this->interactionRates->getPerformInteractionTabs(position, tabE, tabs, tabCDF);
 	
     if (E < tabE.front() or E > tabE.back())
 		return;
@@ -362,19 +364,11 @@ void EMTripletPairProduction::process(Candidate *candidate) const {
 	double z = candidate->getRedshift();
 	double E = (1 + z) * candidate->current.getEnergy();
     Vector3d position = candidate->current.getPosition();
-
-    std::vector<double> tabEnergy;
-    std::vector<double> tabRate;
     
-    getProcessTabs(position, tabEnergy, tabRate);
+    double scaling = pow_integer<2>(1 + z) * photonField->getRedshiftScaling(z);
+    double rate = this->interactionRates->getProcessRate(E, position);
     
-	// check if in tabulated energy range
-	if ((E < tabEnergy.front()) or (E > tabEnergy.back()))
-		return;
-
-	// cosmological scaling of interaction distance (comoving)
-	double scaling = pow_integer<2>(1 + z) * photonField->getRedshiftScaling(z);
-	double rate = scaling * interpolate(E, tabEnergy, tabRate);
+    rate *= scaling;
 
 	// run this loop at least once to limit the step size
 	double step = candidate->getCurrentStep();

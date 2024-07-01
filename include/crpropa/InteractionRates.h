@@ -26,6 +26,9 @@ public:
         this->isPositionDependent = false;
     }
     
+    virtual double getProcessRate(const double E, const Vector3d &position) const = 0;
+    virtual void getPerformInteractionTabs(const Vector3d &position, std::vector<double> &tabE, std::vector<double> &tabs, std::vector<std::vector<double>> &tabCDF) const = 0;
+    
     std::string getRatesName() const {
         return this->ratesName;
     }
@@ -53,11 +56,14 @@ class InteractionRatesHomogeneous: public InteractionRates {
 public:
     InteractionRatesHomogeneous(const std::string ratesName, const bool isPositionDependent = true);
     
-    std::vector<double> getTabulatedEnergy();
-    std::vector<double> getTabulatedRate();
-    std::vector<double> getTabulatedE();
-    std::vector<double> getTabulateds();
-    std::vector<std::vector<double>> getTabulatedCDF();
+    std::vector<double> getTabulatedEnergy() const;
+    std::vector<double> getTabulatedRate() const;
+    std::vector<double> getTabulatedE() const;
+    std::vector<double> getTabulateds() const;
+    std::vector<std::vector<double>> getTabulatedCDF() const;
+    
+    double getProcessRate(const double E, const Vector3d &position) const; // override ?
+    void getPerformInteractionTabs(const Vector3d &position, std::vector<double> &tabE, std::vector<double> &tabs, std::vector<std::vector<double>> &tabCDF) const;
     
     void setTabulatedEnergy (std::vector<double>& tabEnergy);
     void setTabulatedRate (std::vector<double>& tabRate);
@@ -82,15 +88,18 @@ class InteractionRatesPositionDependent: public InteractionRates {
 public:
     InteractionRatesPositionDependent(const std::string ratesName, const bool isPositionDependent = true);
     
-    std::vector<double> getTabulatedEnergy();
-    std::vector<std::vector<double>> getTabulatedRate();
-    std::vector<double> getTabulatedE();
-    std::vector<std::vector<double>> getTabulateds();
-    std::vector<std::vector<std::vector<double>>> getTabulatedCDF();
-    std::unordered_map<int, Vector3d> getPhotonDict();
-    std::vector<double> getClosestRate(const Vector3d &position);
-    std::vector<double> getClosests(const Vector3d &position);
-    std::vector<std::vector<double>> getClosestCDF(const Vector3d &position);
+    std::vector<double> getTabulatedEnergy() const;
+    std::vector<std::vector<double>> getTabulatedRate() const;
+    std::vector<double> getTabulatedE() const;
+    std::vector<std::vector<double>> getTabulateds() const;
+    std::vector<std::vector<std::vector<double>>> getTabulatedCDF() const;
+    std::unordered_map<int, Vector3d> getPhotonDict() const;
+    std::vector<double> getClosestRate(const Vector3d &position) const;
+    std::vector<double> getClosests(const Vector3d &position) const;
+    std::vector<std::vector<double>> getClosestCDF(const Vector3d &position) const;
+    
+    double getProcessRate(const double E, const Vector3d &position) const; // override ?
+    void getPerformInteractionTabs(const Vector3d &position, std::vector<double> &tabE, std::vector<double> &tabs, std::vector<std::vector<double>> &tabCDF) const;
     
     void setTabulatedEnergy (std::vector<double>& tabEnergy);
     void setTabulatedRate (std::vector<std::vector<double>>& tabRate);

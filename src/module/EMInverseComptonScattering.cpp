@@ -339,6 +339,7 @@ class ICSSecondariesEnergyDistribution {
 		}
 };
 
+/**
 void EMInverseComptonScattering::getPerformInteractionTabs(const Vector3d &position, std::vector<double> &tabE, std::vector<double> &tabs, std::vector<std::vector<double>> &tabCDF) const {
     if (!this->photonField->hasPositionDependence()){
         
@@ -381,6 +382,7 @@ void EMInverseComptonScattering::getProcessTabs(const Vector3d &position, std::v
         tabRate = Rate;
     }
 }
+ */
 
 void EMInverseComptonScattering::performInteraction(Candidate *candidate) const {
 	// scale the particle energy instead of background photons
@@ -393,7 +395,7 @@ void EMInverseComptonScattering::performInteraction(Candidate *candidate) const 
     std::vector<double> tabs;
     std::vector<std::vector<double>> tabCDF;
     
-    getPerformInteractionTabs(position, tabE, tabs, tabCDF);
+    this->interactionRates->getPerformInteractionTabs(position, tabE, tabs, tabCDF);
     
 	if (E < tabE.front() or E > tabE.back())
 		return;
@@ -435,16 +437,8 @@ void EMInverseComptonScattering::process(Candidate *candidate) const {
 	double E = candidate->current.getEnergy() * (1 + z);
     Vector3d position = candidate->current.getPosition();
 
-    std::vector<double> tabEnergy;
-    std::vector<double> tabRate;
-    
-    getProcessTabs(position, tabEnergy, tabRate);
-
-	if (E < tabEnergy.front() or (E > tabEnergy.back()))
-		return;
-
 	// interaction rate
-	double rate = interpolate(E, tabEnergy, tabRate);
+    double rate = this->interactionRates->getProcessRate(E, position);
 	rate *= pow_integer<2>(1 + z) * photonField->getRedshiftScaling(z);
 
 	// run this loop at least once to limit the step size

@@ -69,7 +69,7 @@ public:
 	
     void initRatePositionDependentPhotonField(std::string filepath, InteractionRatesPositionDependent* intRatesPosDep);
     
-    void getProcessTabs(const Vector3d &position, std::vector<double> &tabEnergy, std::vector<double> &tabRate) const;
+    // void getProcessTabs(const Vector3d &position, std::vector<double> &tabEnergy, std::vector<double> &tabRate) const;
     
     void process(Candidate *candidate) const;
 	void performInteraction(Candidate *candidate) const;
