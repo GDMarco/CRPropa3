@@ -105,8 +105,6 @@ void EMPairProduction::initRatePositionDependentPhotonField(std::string filepath
     
     for (auto const& dir_entry : std::__fs::filesystem::directory_iterator{dir}) {
 
-        // the input filename here should be a string
-        //check if it is correct, i.e. a proper filename string
         std::string filename = dir_entry.path().string();
         std::ifstream infile(filename.c_str());
         
@@ -343,51 +341,6 @@ class PPSecondariesEnergyDistribution {
 		}
 };
 
-/**
-void EMPairProduction::getPerformInteractionTabs(const Vector3d &position, std::vector<double> &tabE, std::vector<double> &tabs, std::vector<std::vector<double>> &tabCDF) const {
-    if (!this->photonField->hasPositionDependence()){
-        
-        InteractionRatesHomogeneous* intRateHom = static_cast<InteractionRatesHomogeneous*>(this->interactionRates.get());
-        
-        tabE = intRateHom->getTabulatedE();
-        tabs = intRateHom->getTabulateds();
-        tabCDF = intRateHom->getTabulatedCDF();
-        
-    } else {
-        
-        InteractionRatesPositionDependent* intRatePosDep = static_cast<InteractionRatesPositionDependent*>(this->interactionRates.get());
-        
-        std::vector<double> E = intRatePosDep->getTabulatedE();
-        std::vector<double> s = intRatePosDep->getClosests(position);
-        std::vector<std::vector<double>> CDF = intRatePosDep->getClosestCDF(position);
-        
-        tabE = E;
-        tabs = s;
-        tabCDF = CDF;
-    }
-}
- 
-void EMPairProduction::getProcessTabs(const Vector3d &position, std::vector<double> &tabEnergy, std::vector<double> &tabRate) const {
-    if (!this->photonField->hasPositionDependence()) {
-        
-        InteractionRatesHomogeneous* intRateHom = static_cast<InteractionRatesHomogeneous*>(this->interactionRates.get());
-        
-        tabEnergy = intRateHom->getTabulatedEnergy();
-        tabRate = intRateHom->getTabulatedRate();
-    
-    } else {
-        
-        InteractionRatesPositionDependent* intRatePosDep = static_cast<InteractionRatesPositionDependent*>(this->interactionRates.get());
-        
-        std::vector<double> Energy = intRatePosDep->getTabulatedEnergy();
-        std::vector<double> Rate = intRatePosDep->getClosestRate(position);
-        
-        tabEnergy = Energy;
-        tabRate = Rate;
-    }
-}
-*/
-
 void EMPairProduction::performInteraction(Candidate *candidate) const {
     
     // scale particle energy instead of background photon energy
@@ -402,7 +355,6 @@ void EMPairProduction::performInteraction(Candidate *candidate) const {
     if (not haveElectrons)
         return;
     
-    // to remove after the implementation...
     std::vector<double> tabE;
     std::vector<double> tabs;
     std::vector<std::vector<double>> tabCDF;
@@ -420,7 +372,6 @@ void EMPairProduction::performInteraction(Candidate *candidate) const {
     double lo = std::max(4 * mec2 * mec2, tabs[j-1]);  // first s-tabulation point below min(s_kin) = (2 me c^2)^2; ensure physical value
     double hi = tabs[j];
     double s = lo + random.rand() * (hi - lo);
-    // ... until here
     
     // sample electron / positron energy
     static PPSecondariesEnergyDistribution interpolation;
@@ -458,23 +409,6 @@ void EMPairProduction::process(Candidate *candidate) const {
     double z = candidate->getRedshift();
     double E = candidate->current.getEnergy() * (1 + z);
     Vector3d position = candidate->current.getPosition();
-    
-    /**
-    // to remove in the new optimization...
-    std::vector<double> tabEnergy;
-    std::vector<double> tabRate;
-    
-    getProcessTabs(position, tabEnergy, tabRate); // try to put the function in InteractionRates
-
-    // check if in tabulated energy range
-    if ((E < tabEnergy.front()) or (E > tabEnergy.back())) {
-        return;
-    }
-    
-    // interaction rate
-    double rate = interpolate(E, tabEnergy, tabRate);
-    // ... until here
-    */
     
     // New optimization
     double rate = this->interactionRates->getProcessRate(E, position);

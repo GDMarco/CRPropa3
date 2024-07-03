@@ -62,7 +62,7 @@ public:
     std::vector<double> getTabulateds() const;
     std::vector<std::vector<double>> getTabulatedCDF() const;
     
-    double getProcessRate(const double E, const Vector3d &position) const; // override ?
+    double getProcessRate(const double E, const Vector3d &position) const;
     void getPerformInteractionTabs(const Vector3d &position, std::vector<double> &tabE, std::vector<double> &tabs, std::vector<std::vector<double>> &tabCDF) const;
     
     void setTabulatedEnergy (std::vector<double>& tabEnergy);
@@ -98,7 +98,7 @@ public:
     std::vector<double> getClosests(const Vector3d &position) const;
     std::vector<std::vector<double>> getClosestCDF(const Vector3d &position) const;
     
-    double getProcessRate(const double E, const Vector3d &position) const; // override ?
+    double getProcessRate(const double E, const Vector3d &position) const;
     void getPerformInteractionTabs(const Vector3d &position, std::vector<double> &tabE, std::vector<double> &tabs, std::vector<std::vector<double>> &tabCDF) const;
     
     void setTabulatedEnergy (std::vector<double>& tabEnergy);

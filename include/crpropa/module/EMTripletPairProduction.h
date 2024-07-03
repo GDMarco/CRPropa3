@@ -40,6 +40,7 @@ public:
 	 @param haveElectrons	if true, add secondary electrons as candidates
 	 @param thinning		weighted sampling of secondaries (0: all particles are tracked; 1: maximum thinning)
 	 @param limit			step size limit as fraction of mean free path
+     @param (hidden) interactionRates object to store and access to the interaction rates of the process
 	 */
 	EMTripletPairProduction(ref_ptr<PhotonField> photonField, bool haveElectrons = false, double thinning = 0, double limit = 0.1);
 
@@ -70,11 +71,6 @@ public:
     
     void initRatePositionDependentPhotonField(std::string filepath, InteractionRatesPositionDependent* intRatesPosDep);
     void initCumulativeRatePositionDependentPhotonField(std::string filepath, InteractionRatesPositionDependent* intRatesPosDep);
-
-    /**
-    void getPerformInteractionTabs(const Vector3d &position, std::vector<double> &tabE, std::vector<double> &tabs, std::vector<std::vector<double>> &tabCDF) const;
-    void getProcessTabs(const Vector3d &position, std::vector<double> &tabEnergy, std::vector<double> &tabRate) const;
-    */
     
 	void process(Candidate *candidate) const;
 	void performInteraction(Candidate *candidate) const;

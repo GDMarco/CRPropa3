@@ -339,51 +339,6 @@ class ICSSecondariesEnergyDistribution {
 		}
 };
 
-/**
-void EMInverseComptonScattering::getPerformInteractionTabs(const Vector3d &position, std::vector<double> &tabE, std::vector<double> &tabs, std::vector<std::vector<double>> &tabCDF) const {
-    if (!this->photonField->hasPositionDependence()){
-        
-        InteractionRatesHomogeneous* intRateHom = static_cast<InteractionRatesHomogeneous*>(this->interactionRates.get());
-        
-        tabE = intRateHom->getTabulatedE();
-        tabs = intRateHom->getTabulateds();
-        tabCDF = intRateHom->getTabulatedCDF();
-        
-    } else {
-        
-        InteractionRatesPositionDependent* intRatePosDep = static_cast<InteractionRatesPositionDependent*>(this->interactionRates.get());
-        
-        std::vector<double> E = intRatePosDep->getTabulatedE();
-        std::vector<double> s = intRatePosDep->getClosests(position);
-        std::vector<std::vector<double>> CDF = intRatePosDep->getClosestCDF(position);
-        
-        tabE = E;
-        tabs = s;
-        tabCDF = CDF;
-    }
-}
-
-void EMInverseComptonScattering::getProcessTabs(const Vector3d &position, std::vector<double> &tabEnergy, std::vector<double> &tabRate) const {
-    if (!this->photonField->hasPositionDependence()) {
-        
-        InteractionRatesHomogeneous* intRateHom = static_cast<InteractionRatesHomogeneous*>(this->interactionRates.get());
-        
-        tabEnergy = intRateHom->getTabulatedEnergy();
-        tabRate = intRateHom->getTabulatedRate();
-        
-    } else {
-        
-        InteractionRatesPositionDependent* intRatePosDep = static_cast<InteractionRatesPositionDependent*>(this->interactionRates.get());
-        
-        std::vector<double> Energy = intRatePosDep->getTabulatedEnergy();
-        std::vector<double> Rate = intRatePosDep->getClosestRate(position);
-        
-        tabEnergy = Energy;
-        tabRate = Rate;
-    }
-}
- */
-
 void EMInverseComptonScattering::performInteraction(Candidate *candidate) const {
 	// scale the particle energy instead of background photons
 	double z = candidate->getRedshift();

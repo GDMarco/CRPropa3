@@ -97,8 +97,6 @@ void EMDoublePairProduction::initRatePositionDependentPhotonField(std::string fi
     
     for (auto const& dir_entry : std::__fs::filesystem::directory_iterator{dir}) {
 
-        // the input filename here should be a string
-        //check if it is correct, i.e. a proper filename string
         std::string filename = dir_entry.path().string();
         std::ifstream infile(filename.c_str());
         
@@ -159,27 +157,7 @@ void EMDoublePairProduction::initRatePositionDependentPhotonField(std::string fi
     intRatesPosDep->setPhotonDict(photonDict);
     
 }
-/**
-void EMDoublePairProduction::getProcessTabs(const Vector3d &position, std::vector<double> &tabEnergy, std::vector<double> &tabRate) const {
-    if (!this->photonField->hasPositionDependence()) {
-        
-        InteractionRatesHomogeneous* intRateHom = static_cast<InteractionRatesHomogeneous*>(this->interactionRates.get());
-        
-        tabEnergy = intRateHom->getTabulatedEnergy();
-        tabRate = intRateHom->getTabulatedRate();
-        
-    } else {
-        
-        InteractionRatesPositionDependent* intRatePosDep = static_cast<InteractionRatesPositionDependent*>(this->interactionRates.get());
-        
-        std::vector<double> Energy = intRatePosDep->getTabulatedEnergy();
-        std::vector<double> Rate = intRatePosDep->getClosestRate(position);
-        
-        tabEnergy = Energy;
-        tabRate = Rate;
-    }
-}
- */
+
 void EMDoublePairProduction::performInteraction(Candidate *candidate) const {
 	// the photon is lost after the interaction
 	candidate->setActive(false);
