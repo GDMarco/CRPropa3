@@ -55,7 +55,7 @@ double InteractionRatesHomogeneous::getProcessRate(const double E, const Vector3
     }
 }
 
-void InteractionRatesHomogeneous::getPerformInteractionTabs(const Vector3d &position, std::vector<double> &tabE, std::vector<double> &tabs, std::vector<std::vector<double>> &tabCDF) const {
+void InteractionRatesHomogeneous::loadPerformInteractionTabs(const Vector3d &position, std::vector<double> &tabE, std::vector<double> &tabs, std::vector<std::vector<double>> &tabCDF) const {
     tabE = this->getTabulatedE();
     tabs = this->getTabulateds();
     tabCDF = this->getTabulatedCDF();
@@ -195,7 +195,7 @@ double InteractionRatesPositionDependent::getProcessRate(const double E, const V
     }
 }
 
-void InteractionRatesPositionDependent::getPerformInteractionTabs(const Vector3d &position, std::vector<double> &tabE, std::vector<double> &tabs, std::vector<std::vector<double>> &tabCDF) const {
+void InteractionRatesPositionDependent::loadPerformInteractionTabs(const Vector3d &position, std::vector<double> &tabE, std::vector<double> &tabs, std::vector<std::vector<double>> &tabCDF) const {
     
     std::vector<double> E = this->getTabulatedE();
     std::vector<double> s = this->getClosests(position);
