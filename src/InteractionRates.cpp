@@ -37,16 +37,16 @@ std::vector<std::vector<double>> InteractionRatesHomogeneous::getTabulatedCDF() 
 
 double InteractionRatesHomogeneous::getProcessRate(const double E, const Vector3d &position) const {
     if (!this->isPositionDependent) {
-        std::vector<double> tabEnergy = this->getTabulatedEnergy();
-        std::vector<double> tabRate = this->getTabulatedRate();
+        //std::vector<double> tabEnergy = this->getTabulatedEnergy();
+        //std::vector<double> tabRate = this->getTabulatedRate();
         
         // check if in tabulated energy range
-        if ((E < tabEnergy.front()) or (E > tabEnergy.back())) {
+        if ((E < this->tabEnergy.front()) or (E > this->tabEnergy.back())) {
             throw std::runtime_error("Candidate energy out of tables!");
         }
         
         // compute the interaction rate for the given candidate energy, E
-        double rate = interpolate(E, tabEnergy, tabRate);
+        double rate = interpolate(E, this->tabEnergy, this->tabRate);
         
         return rate;
         
@@ -61,23 +61,23 @@ void InteractionRatesHomogeneous::loadPerformInteractionTabs(const Vector3d &pos
     tabCDF = this->getTabulatedCDF();
 }
 
-void InteractionRatesHomogeneous::setTabulatedEnergy (std::vector<double>& tabEnergy) {
+void InteractionRatesHomogeneous::setTabulatedEnergy(std::vector<double>& tabEnergy) {
     this->tabEnergy = tabEnergy;
 }
 
-void InteractionRatesHomogeneous::setTabulatedRate (std::vector<double>& tabRate) {
+void InteractionRatesHomogeneous::setTabulatedRate(std::vector<double>& tabRate) {
     this->tabRate = tabRate;
 }
 
-void InteractionRatesHomogeneous::setTabulatedE (std::vector<double>& tabE) {
+void InteractionRatesHomogeneous::setTabulatedE(std::vector<double>& tabE) {
     this->tabE = tabE;
 }
 
-void InteractionRatesHomogeneous::setTabulateds (std::vector<double>& tabs) {
+void InteractionRatesHomogeneous::setTabulateds(std::vector<double>& tabs) {
     this->tabs = tabs;
 }
 
-void InteractionRatesHomogeneous::setTabulatedCDF (std::vector<std::vector<double>>& tabCDF) {
+void InteractionRatesHomogeneous::setTabulatedCDF(std::vector<std::vector<double>>& tabCDF) {
     this->tabCDF = tabCDF;
 }
 
@@ -180,16 +180,16 @@ double InteractionRatesPositionDependent::getProcessRate(const double E, const V
         
     } else {
         
-        std::vector<double> tabEnergy = this->getTabulatedEnergy();
+        // std::vector<double> tabEnergy = this->getTabulatedEnergy();
         std::vector<double> tabRate = this->getClosestRate(position);
         
         // check if in tabulated energy range
-        if ((E < tabEnergy.front()) or (E > tabEnergy.back())) {
+        if ((E < this->tabEnergy.front()) or (E > this->tabEnergy.back())) {
             throw std::runtime_error("Candidate energy out of tables!");
         }
         
         // compute the interaction rate for the given candidate energy, E
-        double rate = interpolate(E, tabEnergy, tabRate);
+        double rate = interpolate(E, this->tabEnergy, tabRate);
         
         return rate;
     }
@@ -206,27 +206,27 @@ void InteractionRatesPositionDependent::loadPerformInteractionTabs(const Vector3
     tabCDF = CDF;
 }
 
-void InteractionRatesPositionDependent::setTabulatedEnergy (std::vector<double>& tabEnergy) {
+void InteractionRatesPositionDependent::setTabulatedEnergy(std::vector<double>& tabEnergy) {
     this->tabEnergy = tabEnergy;
 }
 
-void InteractionRatesPositionDependent::setTabulatedRate (std::vector<std::vector<double>>& tabRate) {
+void InteractionRatesPositionDependent::setTabulatedRate(std::vector<std::vector<double>>& tabRate) {
     this->tabRate = tabRate;
 }
 
-void InteractionRatesPositionDependent::setTabulatedE (std::vector<double>& tabE) {
+void InteractionRatesPositionDependent::setTabulatedE(std::vector<double>& tabE) {
     this->tabE = tabE;
 }
 
-void InteractionRatesPositionDependent::setTabulateds (std::vector<std::vector<double>>& tabs) {
+void InteractionRatesPositionDependent::setTabulateds(std::vector<std::vector<double>>& tabs) {
     this->tabs = tabs;
 }
 
-void InteractionRatesPositionDependent::setTabulatedCDF (std::vector<std::vector<std::vector<double>>>& tabCDF) {
+void InteractionRatesPositionDependent::setTabulatedCDF(std::vector<std::vector<std::vector<double>>>& tabCDF) {
     this->tabCDF = tabCDF;
 }
 
-void InteractionRatesPositionDependent::setPhotonDict (std::unordered_map<int, Vector3d>& photonDict) {
+void InteractionRatesPositionDependent::setPhotonDict(std::unordered_map<int, Vector3d>& photonDict) {
     this->photonDict = photonDict;
 }
 
