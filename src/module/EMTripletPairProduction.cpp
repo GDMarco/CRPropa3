@@ -274,7 +274,7 @@ void EMTripletPairProduction::performInteraction(Candidate *candidate) const {
     std::vector<double> tabs;
     std::vector<std::vector<double>> tabCDF;
     
-    this->interactionRates->getPerformInteractionTabs(position, tabE, tabs, tabCDF);
+    this->interactionRates->loadPerformInteractionTabs(position, tabE, tabs, tabCDF);
 	
     if (E < tabE.front() or E > tabE.back())
 		return;
