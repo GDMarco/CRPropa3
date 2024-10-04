@@ -3,8 +3,10 @@
 #include "crpropa/Random.h"
 #include "crpropa/PhotonBackground.h"
 #include "crpropa/InteractionRates.h"
+#include "crpropa/Geometry.h"
 
 #include <fstream>
+#include <locale>
 #include <limits>
 #include <stdexcept>
 #include <filesystem>
@@ -15,8 +17,9 @@
 
 namespace crpropa {
 
-EMDoublePairProduction::EMDoublePairProduction(ref_ptr<PhotonField> photonField, bool haveElectrons, double thinning, double limit) {
-	setPhotonField(photonField);
+EMDoublePairProduction::EMDoublePairProduction(ref_ptr<PhotonField> photonField, bool haveElectrons, double thinning, double limit, Surface* surface) {
+    setSurface(surface);
+    setPhotonField(photonField);
 	setHaveElectrons(haveElectrons);
 	setLimit(limit);
 	setThinning(thinning);
@@ -52,6 +55,14 @@ void EMDoublePairProduction::setLimit(double limit) {
 
 void EMDoublePairProduction::setThinning(double thinning) {
 	this->thinning = thinning;
+}
+
+void EMDoublePairProduction::setSurface(Surface* surface) {
+    this->surface = surface;
+}
+
+bool EMDoublePairProduction::hasSurface() const {
+    return this->surface != nullptr;
 }
 
 void EMDoublePairProduction::initRate(std::string filename, InteractionRatesHomogeneous* intRatesHom) {
@@ -107,6 +118,37 @@ void EMDoublePairProduction::initRatePositionDependentPhotonField(std::string fi
             throw
             std::runtime_error("EMDoublePairProduction: could not open file " + filename);
         
+        double x, y, z;
+        std::string str;
+        std::stringstream ss;
+        
+        std::string filename_split = splitFilename(dir_entry.path().string());
+        ss << filename_split;
+        
+        int iLine = 0;
+        
+        std::locale::global(std::locale("C"));
+        
+        while (getline(ss, str, '_')) {
+            if (iLine == 3) {
+                x = -std::stod(str) * kpc;
+            }
+            if (iLine == 4) {
+                y = std::stod(str) * kpc;
+            }
+            if (iLine == 5) {
+                z = std::stod(str) * kpc;
+            }
+            iLine = iLine + 1;
+        }
+        
+        Vector3d vPos(x, y, z);
+        
+        if (hasSurface() and !surface->isInside(vPos))
+            continue;
+        
+        photonDict[iFile] = vPos;
+        
         while (infile.good()) {
             if (infile.peek() != '#') {
                 double a, b;
@@ -123,31 +165,6 @@ void EMDoublePairProduction::initRatePositionDependentPhotonField(std::string fi
         }
         
         tabRate.push_back(vecRate);
-        
-        double x, y, z;
-        std::string str;
-        std::stringstream ss;
-        
-        std::string filename_split = splitFilename(dir_entry.path().string());
-        ss << filename_split;
-        
-        int iLine = 0;
-        
-        while (getline(ss, str, '_')) {
-            if (iLine == 3) {
-                x = stod(str) * kpc;
-            }
-            if (iLine == 4) {
-                y = stod(str) * kpc;
-            }
-            if (iLine == 5) {
-                z = stod(str) * kpc;
-            }
-            iLine = iLine + 1;
-        }
-        
-        Vector3d vPos(x, y, z);
-        photonDict[iFile] = vPos;
         
         iFile = iFile + 1;
         infile.close();

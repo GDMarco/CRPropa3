@@ -3,8 +3,11 @@
 #include "crpropa/Random.h"
 #include "crpropa/PhotonBackground.h"
 #include "crpropa/InteractionRates.h"
+#include "crpropa/Geometry.h"
 
 #include <fstream>
+#include <locale>
+#include <iomanip>
 #include <limits>
 #include <stdexcept>
 #include <filesystem>
@@ -18,7 +21,8 @@ namespace crpropa {
 
 static const double mec2 = mass_electron * c_squared;
 
-EMPairProduction::EMPairProduction(ref_ptr<PhotonField> photonField, bool haveElectrons, double thinning, double limit) {
+EMPairProduction::EMPairProduction(ref_ptr<PhotonField> photonField, bool haveElectrons, double thinning, double limit, Surface* surface) {
+    setSurface(surface);
     setPhotonField(photonField);
 	setThinning(thinning);
 	setLimit(limit);
@@ -62,6 +66,14 @@ void EMPairProduction::setThinning(double thinning) {
 	this->thinning = thinning;
 }
 
+void EMPairProduction::setSurface(Surface* surface) {
+    this->surface = surface;
+}
+
+bool EMPairProduction::hasSurface() const {
+    return this->surface != nullptr;
+}
+
 void EMPairProduction::initRate(std::string filename, InteractionRatesHomogeneous* intRatesHom) {
 	std::ifstream infile(filename.c_str());
 
@@ -102,18 +114,50 @@ void EMPairProduction::initRatePositionDependentPhotonField(std::string filepath
     std::__fs::filesystem::path dir = filepath;
     std::unordered_map<int, Vector3d> photonDict;
     int iFile = 0;
+    int nRSups = 0;
     
     for (auto const& dir_entry : std::__fs::filesystem::directory_iterator{dir}) {
 
         std::string filename = dir_entry.path().string();
         std::ifstream infile(filename.c_str());
         
-        std::vector<double> vecEnergy;
-        std::vector<double> vecRate;
-        
         if (!infile.good())
             throw
             std::runtime_error("EMPairProduction: could not open file " + filename);
+        
+        double x, y, z;
+        std::string str;
+        std::stringstream ss;
+        
+        std::string filename_split = splitFilename(dir_entry.path().string());
+        ss << filename_split;
+        
+        int iLine = 0;
+        
+        std::locale::global(std::locale("C"));
+
+        while (getline(ss, str, '_')) {
+            if (iLine == 3) {
+                x = -std::stod(str) * kpc;
+            }
+            if (iLine == 4) {
+                y = std::stod(str) * kpc;
+            }
+            if (iLine == 5) {
+                z = std::stod(str) * kpc;
+            }
+            iLine = iLine + 1;
+        }
+        
+        Vector3d vPos(x, y, z);
+        
+        if (hasSurface() and !surface->isInside(vPos))
+            continue;
+    
+        photonDict[iFile] = vPos;
+        
+        std::vector<double> vecEnergy;
+        std::vector<double> vecRate;
         
         while (infile.good()) {
             if (infile.peek() != '#') {
@@ -130,37 +174,19 @@ void EMPairProduction::initRatePositionDependentPhotonField(std::string filepath
             infile.ignore(std::numeric_limits < std::streamsize > ::max(), '\n');
         }
         
-        tabRate.push_back(vecRate);
-        
-        double x, y, z;
-        std::string str;
-        std::stringstream ss;
-        
-        std::string filename_split = splitFilename(dir_entry.path().string());
-        ss << filename_split;
-        
-        int iLine = 0;
-        
-        while (getline(ss, str, '_')) {
-            if (iLine == 3) {
-                x = stod(str) * kpc;
-            }
-            if (iLine == 4) {
-                y = stod(str) * kpc;
-            }
-            if (iLine == 5) {
-                z = stod(str) * kpc;
-            }
-            iLine = iLine + 1;
+        std::vector<double> vecEnergy1 = intRatesPosDep->getTabulatedEnergy(); //std::defaultfloat
+        if (vecRate.size() != vecEnergy1.size()) {
+            nRSups = nRSups + 1;
+            std::cout << std::fixed << std::setprecision(7);
+            std::cout << "suspVec: " << vPos.x / kpc << " " << vPos.y / kpc << " " << vPos.z / kpc << std::endl;
         }
         
-        Vector3d vPos(x, y, z);
-        photonDict[iFile] = vPos;
+        tabRate.push_back(vecRate);
         
         iFile = iFile + 1;
         infile.close();
     }
-    
+    std::cout << "# sousp rate: " << nRSups << std::endl;
     intRatesPosDep->setTabulatedRate(tabRate);
     intRatesPosDep->setPhotonDict(photonDict);
 }
@@ -216,7 +242,8 @@ void EMPairProduction::initCumulativeRatePositionDependentPhotonField(std::strin
     
     std::__fs::filesystem::path dir = filepath;
     int iFile = 0;
-    
+    int nCDFSusp = 0;
+
     for (auto const& dir_entry : std::__fs::filesystem::directory_iterator{dir}) {
         
         std::vector<double> vecE;
@@ -230,6 +257,35 @@ void EMPairProduction::initCumulativeRatePositionDependentPhotonField(std::strin
         
         if (!infile.good())
             throw std::runtime_error("EMPairProduction: could not open file " + filename);
+        
+        double x, y, z;
+        std::string str;
+        std::stringstream ss;
+        
+        std::string filename_split = splitFilename(dir_entry.path().string());
+        ss << filename_split;
+        
+        int iLine = 0;
+        
+        std::locale::global(std::locale("C"));
+
+        while (getline(ss, str, '_')) {
+            if (iLine == 3) {
+                x = -std::stod(str) * kpc;
+            }
+            if (iLine == 4) {
+                y = std::stod(str) * kpc;
+            }
+            if (iLine == 5) {
+                z = std::stod(str) * kpc;
+            }
+            iLine = iLine + 1;
+        }
+        
+        Vector3d vPos(x, y, z);
+        
+        if (hasSurface() and !surface->isInside(vPos))
+            continue;
         
         // skip header
         while (infile.peek() == '#')
@@ -259,13 +315,14 @@ void EMPairProduction::initCumulativeRatePositionDependentPhotonField(std::strin
             }
             vecCDF.push_back(cdf);
         }
+
         iFile = iFile + 1;
         
         tabs.push_back(vecs);
         tabCDF.push_back(vecCDF);
         infile.close();
     }
-    
+     std::cout << "# suspicius CDF: " << nCDFSusp << std::endl;
     intRatesPosDep->setTabulateds(tabs);
     intRatesPosDep->setTabulatedCDF(tabCDF);
 }

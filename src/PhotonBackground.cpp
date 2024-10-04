@@ -6,6 +6,7 @@
 #include "kiss/logger.h"
 
 #include <fstream>
+#include <locale>
 #include <stdexcept>
 #include <limits>
 #include <cmath>
@@ -223,6 +224,8 @@ TabularSpatialPhotonField::TabularSpatialPhotonField(std::string fieldName, bool
             
             //Getline function to take and store the x, y, z coordinates of each node
             int iLine = 0;
+            // it ensures the double numbers are of the type 1.00329, with the . for the decimal part
+            std::locale::global(std::locale("C"));
             
             while (getline(ss, str, '_')) {
                 if (iLine == 2) {

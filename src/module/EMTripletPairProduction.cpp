@@ -1,8 +1,10 @@
 #include "crpropa/module/EMTripletPairProduction.h"
 #include "crpropa/Units.h"
 #include "crpropa/Random.h"
+#include "crpropa/Geometry.h"
 
 #include <fstream>
+#include <locale>
 #include <limits>
 #include <stdexcept>
 #include <filesystem>
@@ -11,7 +13,8 @@ namespace crpropa {
 
 static const double mec2 = mass_electron * c_squared;
 
-EMTripletPairProduction::EMTripletPairProduction(ref_ptr<PhotonField> photonField, bool haveElectrons, double thinning, double limit) {
+EMTripletPairProduction::EMTripletPairProduction(ref_ptr<PhotonField> photonField, bool haveElectrons, double thinning, double limit, Surface* surface) {
+    setSurface(surface);
 	setPhotonField(photonField);
 	setHaveElectrons(haveElectrons);
 	setLimit(limit);
@@ -51,6 +54,14 @@ void EMTripletPairProduction::setLimit(double limit) {
 
 void EMTripletPairProduction::setThinning(double thinning) {
 	this->thinning = thinning;
+}
+
+void EMTripletPairProduction::setSurface(Surface* surface) {
+    this->surface = surface;
+}
+
+bool EMTripletPairProduction::hasSurface() const {
+    return this->surface != nullptr;
 }
 
 void EMTripletPairProduction::initRate(std::string filename, InteractionRatesHomogeneous* intRatesHom) {
@@ -107,6 +118,37 @@ void EMTripletPairProduction::initRatePositionDependentPhotonField(std::string f
             throw
             std::runtime_error("EMTripletPairProduction: could not open file " + filename);
         
+        double x, y, z;
+        std::string str;
+        std::stringstream ss;
+        
+        std::string filename_split = splitFilename(dir_entry.path().string());
+        ss << filename_split;
+        
+        int iLine = 0;
+        
+        std::locale::global(std::locale("C"));
+        
+        while (getline(ss, str, '_')) {
+            if (iLine == 3) {
+                x = -std::stod(str) * kpc;
+            }
+            if (iLine == 4) {
+                y = std::stod(str) * kpc;
+            }
+            if (iLine == 5) {
+                z = std::stod(str) * kpc;
+            }
+            iLine = iLine + 1;
+        }
+        
+        Vector3d vPos(x, y, z);
+        
+        if (hasSurface() and !surface->isInside(vPos))
+            continue;
+        
+        photonDict[iFile] = vPos;
+        
         while (infile.good()) {
             if (infile.peek() != '#') {
                 double a, b;
@@ -123,31 +165,6 @@ void EMTripletPairProduction::initRatePositionDependentPhotonField(std::string f
         }
         
         tabRate.push_back(vecRate);
-        
-        double x, y, z;
-        std::string str;
-        std::stringstream ss;
-        
-        std::string filename_split = splitFilename(dir_entry.path().string());
-        ss << filename_split;
-        
-        int iLine = 0;
-        
-        while (getline(ss, str, '_')) {
-            if (iLine == 3) {
-                x = stod(str) * kpc;
-            }
-            if (iLine == 4) {
-                y = stod(str) * kpc;
-            }
-            if (iLine == 5) {
-                z = stod(str) * kpc;
-            }
-            iLine = iLine + 1;
-        }
-        
-        Vector3d vPos(x, y, z);
-        photonDict[iFile] = vPos;
         
         iFile = iFile + 1;
         infile.close();
@@ -167,7 +184,7 @@ void EMTripletPairProduction::initCumulativeRate(std::string filename, Interacti
 	if (!infile.good())
 		throw std::runtime_error(
 				"EMTripletPairProduction: could not open file " + filename);
-
+    
 	// skip header
 	while (infile.peek() == '#')
 		infile.ignore(std::numeric_limits < std::streamsize > ::max(), '\n');
@@ -221,6 +238,35 @@ void EMTripletPairProduction::initCumulativeRatePositionDependentPhotonField(std
         
         if (!infile.good())
             throw std::runtime_error("EMTripletPairProduction: could not open file " + filename);
+        
+        double x, y, z;
+        std::string str;
+        std::stringstream ss;
+        
+        std::string filename_split = splitFilename(dir_entry.path().string());
+        ss << filename_split;
+        
+        int iLine = 0;
+        
+        std::locale::global(std::locale("C"));
+        
+        while (getline(ss, str, '_')) {
+            if (iLine == 3) {
+                x = -std::stod(str) * kpc;
+            }
+            if (iLine == 4) {
+                y = std::stod(str) * kpc;
+            }
+            if (iLine == 5) {
+                z = std::stod(str) * kpc;
+            }
+            iLine = iLine + 1;
+        }
+        
+        Vector3d vPos(x, y, z);
+        
+        if (hasSurface() and !surface->isInside(vPos))
+            continue;
         
         // skip header
         while (infile.peek() == '#')

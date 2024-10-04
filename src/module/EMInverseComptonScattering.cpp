@@ -2,10 +2,13 @@
 #include "crpropa/Units.h"
 #include "crpropa/Random.h"
 #include "crpropa/Common.h"
+#include "crpropa/Geometry.h"
 
 #include "crpropa/InteractionRates.h"
 
 #include <fstream>
+#include <locale>
+#include <iomanip>  // Required for std::fixed and std::setprecision
 #include <limits>
 #include <stdexcept>
 #include <filesystem>
@@ -18,8 +21,9 @@ namespace crpropa {
 
 static const double mec2 = mass_electron * c_squared;
 
-EMInverseComptonScattering::EMInverseComptonScattering(ref_ptr<PhotonField> photonField, bool havePhotons, double thinning, double limit) {
-	setPhotonField(photonField);
+EMInverseComptonScattering::EMInverseComptonScattering(ref_ptr<PhotonField> photonField, bool havePhotons, double thinning, double limit, Surface* surface) {
+    setSurface(surface);
+    setPhotonField(photonField);
 	setHavePhotons(havePhotons);
 	setLimit(limit);
 	setThinning(thinning);
@@ -60,6 +64,14 @@ void EMInverseComptonScattering::setLimit(double limit) {
 
 void EMInverseComptonScattering::setThinning(double thinning) {
 	this->thinning = thinning;
+}
+
+void EMInverseComptonScattering::setSurface(Surface* surface) {
+    this->surface = surface;
+}
+
+bool EMInverseComptonScattering::hasSurface() const {
+    return this->surface != nullptr;
 }
 
 void EMInverseComptonScattering::initRate(std::string filename, InteractionRatesHomogeneous* intRatesHom) {
@@ -116,6 +128,37 @@ void EMInverseComptonScattering::initRatePositionDependentPhotonField(std::strin
             throw
             std::runtime_error("EMInverseComptonScattering: could not open file " + filename);
         
+        double x, y, z;
+        std::string str;
+        std::stringstream ss;
+        
+        std::string filename_split = splitFilename(dir_entry.path().string());
+        ss << filename_split;
+        
+        int iLine = 0;
+        
+        std::locale::global(std::locale("C"));
+        
+        while (getline(ss, str, '_')) {
+            if (iLine == 3) {
+                x = -std::stod(str) * kpc;
+            }
+            if (iLine == 4) {
+                y = std::stod(str) * kpc;
+            }
+            if (iLine == 5) {
+                z = std::stod(str) * kpc;
+            }
+            iLine = iLine + 1;
+        }
+        
+        Vector3d vPos(x, y, z);
+        
+        if (hasSurface() and !surface->isInside(vPos))
+            continue;
+        
+        photonDict[iFile] = vPos;
+        
         while (infile.good()) {
             if (infile.peek() != '#') {
                 double a, b;
@@ -130,33 +173,13 @@ void EMInverseComptonScattering::initRatePositionDependentPhotonField(std::strin
             }
             infile.ignore(std::numeric_limits < std::streamsize > ::max(), '\n');
         }
-   
+        
         tabRate.push_back(vecRate);
         
-        double x, y, z;
-        std::string str;
-        std::stringstream ss;
-        
-        std::string filename_split = splitFilename(dir_entry.path().string());
-        ss << filename_split;
-        
-        int iLine = 0;
-        
-        while (getline(ss, str, '_')) {
-            if (iLine == 3) {
-                x = stod(str) * kpc;
-            }
-            if (iLine == 4) {
-                y = stod(str) * kpc;
-            }
-            if (iLine == 5) {
-                z = stod(str) * kpc;
-            }
-            iLine = iLine + 1;
+        if (vecRate.size() != vecEnergy.size()) {
+            std::cout << std::fixed << std::setprecision(7);
+            std::cout << "suspVec: " << vPos.x / kpc << " " << vPos.y / kpc << " " << vPos.z / kpc << std::endl;
         }
-        
-        Vector3d vPos(x, y, z);
-        photonDict[iFile] = vPos;
         
         iFile = iFile + 1;
         infile.close();
@@ -232,6 +255,35 @@ void EMInverseComptonScattering::initCumulativeRatePositionDependentPhotonField(
         if (!infile.good())
             throw std::runtime_error("EMInverseComptonScattering: could not open file " + filename);
         
+        double x, y, z;
+        std::string str;
+        std::stringstream ss;
+        
+        std::string filename_split = splitFilename(dir_entry.path().string());
+        ss << filename_split;
+        
+        int iLine = 0;
+        
+        std::locale::global(std::locale("C"));
+        
+        while (getline(ss, str, '_')) {
+            if (iLine == 3) {
+                x = -std::stod(str) * kpc;
+            }
+            if (iLine == 4) {
+                y = std::stod(str) * kpc;
+            }
+            if (iLine == 5) {
+                z = std::stod(str) * kpc;
+            }
+            iLine = iLine + 1;
+        }
+        
+        Vector3d vPos(x, y, z);
+        
+        if (hasSurface() and !surface->isInside(vPos))
+            continue;
+        
         // skip header
         while (infile.peek() == '#')
             infile.ignore(std::numeric_limits < std::streamsize > ::max(), '\n');
@@ -260,8 +312,13 @@ void EMInverseComptonScattering::initCumulativeRatePositionDependentPhotonField(
             }
             vecCDF.push_back(cdf);
         }
+        
+        if (vecs.size() != vecE.size()) {
+            std::cout << "suspVec (CDF) index: " << iFile << std::endl;
+        }
+        
         iFile = iFile + 1;
-       
+        
         tabs.push_back(vecs);
         tabCDF.push_back(vecCDF);
         infile.close();

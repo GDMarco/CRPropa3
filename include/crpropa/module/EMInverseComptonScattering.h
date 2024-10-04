@@ -7,6 +7,7 @@
 #include "crpropa/Module.h"
 #include "crpropa/PhotonBackground.h"
 #include "crpropa/InteractionRates.h"
+#include "crpropa/Geometry.h"
 
 namespace crpropa {
 /**
@@ -31,6 +32,7 @@ private:
 	bool havePhotons;
 	double limit;
 	double thinning;
+    ref_ptr<Surface> surface; // surface that includes the nodes in the photonField grid to be included
 	std::string interactionTag = "EMIC";
     ref_ptr<InteractionRates> interactionRates;
 
@@ -40,9 +42,10 @@ public:
 	 @param havePhotons		if true, add secondary photons as candidates
 	 @param thinning		weighted sampling of secondaries (0: all particles are tracked; 1: maximum thinning)
 	 @param limit			step size limit as fraction of mean free path
+     @param surface
      @param (hidden) interactionRates object to store and access to the interaction rates of the process
 	 */
-	EMInverseComptonScattering(ref_ptr<PhotonField> photonField, bool havePhotons = false, double thinning = 0, double limit = 0.1);
+	EMInverseComptonScattering(ref_ptr<PhotonField> photonField, bool havePhotons = false, double thinning = 0, double limit = 0.1, Surface* surface = nullptr);
 
 	// set the target photon field 
 	void setPhotonField(ref_ptr<PhotonField> photonField);
@@ -60,6 +63,12 @@ public:
 	 */
 	void setThinning(double thinning);
 
+    /** Apply a surface that confine the position dependent photon field
+     * @param surface closed surface to confine the grid to be  uploaded
+     */
+    void setSurface(Surface* surface);
+    bool hasSurface() const;
+    
 	/** set a custom interaction tag to trace back this interaction
 	 * @param tag string that will be added to the candidate and output
 	 */
