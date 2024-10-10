@@ -218,7 +218,11 @@ void EMDoublePairProduction::process(Candidate *candidate) const {
 
 	// interaction rate
     double rate = this->interactionRates->getProcessRate(E, position);
-	rate *= pow_integer<2>(1 + z) * photonField->getRedshiftScaling(z);
+	
+    if (rate < 0)
+        return;
+    
+    rate *= pow_integer<2>(1 + z) * photonField->getRedshiftScaling(z);
 
 	// check for interaction
 	Random &random = Random::instance();

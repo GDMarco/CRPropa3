@@ -46,7 +46,9 @@ double InteractionRatesHomogeneous::getProcessRate(const double E, const Vector3
         
         // check if in tabulated energy range
         if ((E < this->tabEnergy.front()) or (E > this->tabEnergy.back())) {
-            throw std::runtime_error("Candidate energy out of tables!");
+            // throw std::runtime_error("Candidate energy out of tables!");
+            
+            return -1;
         }
         
         // compute the interaction rate for the given candidate energy, E
@@ -88,8 +90,6 @@ void InteractionRatesHomogeneous::setTabulatedCDF(std::vector<std::vector<double
 InteractionRatesPositionDependent::InteractionRatesPositionDependent(std::string ratesName, bool isPositionDependent) : InteractionRates() {
     this->ratesName = ratesName;
     this->isPositionDependent = isPositionDependent;
-    
-    
 }
 
 std::vector<double> InteractionRatesPositionDependent::getTabulatedEnergy() const {
@@ -191,7 +191,9 @@ double InteractionRatesPositionDependent::getProcessRate(const double E, const V
         
         // check if in tabulated energy range
         if ((E < this->tabEnergy.front()) or (E > this->tabEnergy.back())) {
-            throw std::runtime_error("Candidate energy out of tables!");
+        //    throw std::runtime_error("Candidate energy out of tables!");
+            
+            return -1;
         }
         
         // compute the interaction rate for the given candidate energy, E

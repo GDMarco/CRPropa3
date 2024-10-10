@@ -451,7 +451,11 @@ void EMInverseComptonScattering::process(Candidate *candidate) const {
 
 	// interaction rate
     double rate = this->interactionRates->getProcessRate(E, position);
-	rate *= pow_integer<2>(1 + z) * photonField->getRedshiftScaling(z);
+	
+    if (rate < 0)
+        return;
+    
+    rate *= pow_integer<2>(1 + z) * photonField->getRedshiftScaling(z);
 
 	// run this loop at least once to limit the step size
 	double step = candidate->getCurrentStep();

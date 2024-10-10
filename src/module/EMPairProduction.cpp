@@ -469,7 +469,10 @@ void EMPairProduction::process(Candidate *candidate) const {
     
     // New optimization
     double rate = this->interactionRates->getProcessRate(E, position);
-     
+    
+    if (rate < 0)
+        return;
+    
     rate *= pow_integer<2>(1 + z) * photonField->getRedshiftScaling(z);
     
     // run this loop at least once to limit the step size

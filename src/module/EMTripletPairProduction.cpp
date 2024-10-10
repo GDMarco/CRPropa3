@@ -370,6 +370,9 @@ void EMTripletPairProduction::process(Candidate *candidate) const {
     double scaling = pow_integer<2>(1 + z) * photonField->getRedshiftScaling(z);
     double rate = this->interactionRates->getProcessRate(E, position);
     
+    if (rate < 0)
+        return;
+    
     rate *= scaling;
 
 	// run this loop at least once to limit the step size
