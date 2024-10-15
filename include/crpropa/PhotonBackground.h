@@ -324,6 +324,18 @@ public:
     ISRF_Freudenreich98() : TabularSpatialPhotonField("ISRF_Freudenreich98", false, true) {}
 };
 
+/**
+ @class ISRF
+ @brief Interstellar radiation field model by Robitaille et al. (2012) implemented in Porter et al. (2017)
+ 
+ Source info:
+ DOI:
+ https://iopscience.iop.org/article/10.3847/1538-4357/aa844d
+ */
+class ISRF_Robitaille12: public TabularSpatialPhotonField {
+public:
+    ISRF_Robitaille12() : TabularSpatialPhotonField("ISRF_Robitaille12", false, true) {}
+};
 
 /**
 Test for CMB position depedent (7 nodes) ----> to compare the results between the homogeneous CMB with the position dependent one for EMPP
