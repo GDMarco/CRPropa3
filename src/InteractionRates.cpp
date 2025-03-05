@@ -4,6 +4,8 @@
 #include "crpropa/Units.h"
 #include "crpropa/Random.h"
 
+#include <nanoflann.hpp>
+
 #include <vector>
 #include <string>
 #include <unordered_map>
@@ -47,7 +49,6 @@ double InteractionRatesHomogeneous::getProcessRate(const double E, const Vector3
         // check if in tabulated energy range
         if ((E < this->tabEnergy.front()) or (E > this->tabEnergy.back())) {
             // throw std::runtime_error("Candidate energy out of tables!");
-            
             return -1;
         }
         
@@ -90,6 +91,42 @@ void InteractionRatesHomogeneous::setTabulatedCDF(std::vector<std::vector<double
 InteractionRatesPositionDependent::InteractionRatesPositionDependent(std::string ratesName, bool isPositionDependent) : InteractionRates() {
     this->ratesName = ratesName;
     this->isPositionDependent = isPositionDependent;
+    
+    this->cloud.points.clear();
+    this->cloud.ids.clear();
+    
+    for (const auto& el : this->photonDict) {
+        this->cloud.ids.push_back(el.first);
+        this->cloud.points.push_back(el.second);
+    }
+
+    // Delete old tree if it exists
+    if (this->tree) {
+        delete this->tree;
+    }
+    
+    tree = new KDTree(3, cloud, nanoflann::KDTreeSingleIndexAdaptorParams(10));
+    tree->buildIndex();
+    
+    std::cout << "cloud and tree declared properly" << std::endl;
+    
+}
+
+int InteractionRatesPositionDependent::findClosestGridPoint(const Vector3d &position) const {
+    
+    if (!tree) {
+        throw std::runtime_error("KD-Tree not initialized!");
+    }
+    
+    // Query the KD-Tree
+    unsigned int closestIndex;
+    double closestDistSquared;
+    double queryPoint[3] = { position.x, position.y, position.z };
+
+    tree->knnSearch(queryPoint, 1, &closestIndex, &closestDistSquared);
+
+    // Return the corresponding key from the original map
+    return cloud.ids[closestIndex];
 }
 
 std::vector<double> InteractionRatesPositionDependent::getTabulatedEnergy() const {
@@ -118,8 +155,8 @@ std::unordered_map<int, Vector3d> InteractionRatesPositionDependent::getPhotonDi
 
 std::vector<double> InteractionRatesPositionDependent::getClosestRate(const Vector3d &position) const {
     
-    std::unordered_map<int,Vector3d> photonDict = this->getPhotonDict();
-    
+    int iMin = findClosestGridPoint(position);
+    /**
     double dMin = 1000. * kpc;
     int iMin = -1;
     
@@ -134,6 +171,9 @@ std::vector<double> InteractionRatesPositionDependent::getClosestRate(const Vect
             iMin = el.first;
         }
     }
+     */
+    
+    std::cout << "iMin: " << iMin << std::endl;
     return tabRate[iMin];
 }
 

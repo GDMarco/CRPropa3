@@ -440,7 +440,6 @@ else()
 endif(BUILD_DOC)
 
 
-
 # ----------------------------------------------------------------------------
 # Python
 # ----------------------------------------------------------------------------
@@ -536,6 +535,11 @@ if(ENABLE_PYTHON AND Python_FOUND)
 
 endif(ENABLE_PYTHON AND Python_FOUND)
 
+find_package(nanoflann REQUIRED)
+# add_executable(crpropa test.cpp)
+# Ensure the nanoflann include directory is added
+# include_directories(${nanoflann_INCLUDE_DIRS})
+target_link_libraries(crpropa nanoflann::nanoflann)
 
 # ----------------------------------------------------------------------------
 # Install
